@@ -203,6 +203,7 @@ function TR.Options:RefreshMessage()
     messageEditBox:SetTextColor(1, 1, 1, 1)
 end
 
+
 function TR.Options:Open()
     if settingsCategory then
         Settings.OpenToCategory(settingsCategory.ID or panel.name)
@@ -327,13 +328,30 @@ function TR.Options:Initialize()
         RefreshMessageDisplay()
     end)
 
-    MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 24, -176, 300,
+    MakeLabel(panel, TR:T("textColor"), 24, -176)
+
+    local colorPreview = panel:CreateTexture(nil, "ARTWORK")
+    colorPreview:SetSize(34, 22)
+    colorPreview:SetPoint("TOPLEFT", 24, -200)
+
+    local currentColor = TR.ColorPicker:EnsureTextColor()
+    colorPreview:SetColorTexture(currentColor.r, currentColor.g, currentColor.b, 1)
+
+    local colorButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    colorButton:SetPoint("LEFT", colorPreview, "RIGHT", 10, 0)
+    colorButton:SetSize(140, 26)
+    colorButton:SetText(TR:T("chooseColor"))
+    colorButton:SetScript("OnClick", function()
+        TR.ColorPicker:Open(colorButton, colorPreview)
+    end)
+
+    MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 24, -246, 300,
         function() return TalentReminderDB.fontSize end,
         function(v) TalentReminderDB.fontSize = v end,
         function(v) return string.format("%d", v) end
     )
 
-    MakeSlider(panel, TR:T("duration"), 1, 15, 0.5, 24, -251, 300,
+    MakeSlider(panel, TR:T("duration"), 1, 15, 0.5, 24, -321, 300,
         function() return TalentReminderDB.duration end,
         function(v)
             TalentReminderDB.duration = v
@@ -344,21 +362,21 @@ function TR.Options:Initialize()
         function(v) return string.format("%.1f s", v) end
     )
 
-    MakeSlider(panel, TR:T("fade"), 0, 5, 0.25, 24, -326, 300,
+    MakeSlider(panel, TR:T("fade"), 0, 5, 0.25, 24, -396, 300,
         function() return TalentReminderDB.fadeTime end,
         function(v) TalentReminderDB.fadeTime = math.min(v, TalentReminderDB.duration) end,
         function(v) return string.format("%.2f s", v) end
     )
 
-    MakeCheckbox(panel, TR:T("world"), 20, -398,
+    MakeCheckbox(panel, TR:T("world"), 20, -468,
         function() return TalentReminderDB.remindInWorld end,
         function(v) TalentReminderDB.remindInWorld = v end
     )
 
-    MakeLabel(panel, TR:T("sound"), 24, -441)
+    MakeLabel(panel, TR:T("sound"), 24, -511)
 
     soundDropdown = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    soundDropdown:SetPoint("TOPLEFT", 24, -464)
+    soundDropdown:SetPoint("TOPLEFT", 24, -534)
     soundDropdown:SetSize(330, 30)
 
     soundDropdown.text = soundDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -396,7 +414,7 @@ function TR.Options:Initialize()
     lsmStatus:SetText(TR.Sound:GetLSM() and TR:T("lsmFound") or TR:T("lsmMissing"))
 
     local moveButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    moveButton:SetPoint("TOPLEFT", 24, -541)
+    moveButton:SetPoint("TOPLEFT", 24, -611)
     moveButton:SetSize(155, 30)
     moveButton:SetText(TR:T("move"))
 
@@ -434,7 +452,7 @@ function TR.Options:Initialize()
     end)
 
     local info = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", 24, -596)
+    info:SetPoint("TOPLEFT", 24, -666)
     info:SetWidth(560)
     info:SetJustifyH("LEFT")
     info:SetText(TR:T("info"))

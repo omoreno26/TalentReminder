@@ -17,6 +17,7 @@ Core\Sounds.lua
 Core\Reminder.lua
 
 Tools\InstanceDump.lua
+Tools\ColorPicker.lua
 
 Options\Options.lua
 

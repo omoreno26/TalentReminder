@@ -25,3 +25,8 @@ L["moveOn"] = "move mode enabled."
 L["moveOff"] = "move mode disabled."
 L["instance"] = "Instance"
 L["worldInfo"] = "World = when WoW reports that you are not inside an instance."
+
+L["textColor"] = "Text color"
+L["chooseColor"] = "Choose color"
+L["accept"] = "OK"
+L["cancel"] = "Cancel"

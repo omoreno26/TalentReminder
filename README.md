@@ -162,3 +162,9 @@ Currently included:
 `Core/Instances.lua` only contains the runtime logic used by Talent Reminder to determine whether an `instanceID` is tracked or considered World.
 
 `Tools/InstanceDump.lua` contains the `/tr instances` diagnostic utility, including expansion, dungeon, raid and Delve enumeration.
+
+### Estructura / Structure
+
+- `Tools/InstanceDump.lua`: utilidad de `/tr instances`.
+- `Tools/ColorPicker.lua`: selector RGB del color del texto.
+- `Options/Options.lua`: construye el panel de opciones y llama a las herramientas necesarias.
