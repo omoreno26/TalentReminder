@@ -215,6 +215,22 @@ function TR.Options:Initialize()
         TR.Reminder:ApplyTextStyle()
     end
 
+    editBox:SetScript("OnTextChanged", function(self, userInput)
+        if not userInput then
+            return
+        end
+
+        local value = self:GetText()
+
+        -- Save continuously while the user types so /reload cannot lose
+        -- the current configured message. If the field is temporarily empty
+        -- while editing, keep the previous saved value until focus is lost.
+        if value ~= "" then
+            TalentReminderDB.message = value
+            TR.Reminder:ApplyTextStyle()
+        end
+    end)
+
     editBox:SetScript("OnEnterPressed", function(self)
         SaveMessage()
         self:ClearFocus()
@@ -222,7 +238,7 @@ function TR.Options:Initialize()
     editBox:SetScript("OnEditFocusLost", SaveMessage)
 
     panel:SetScript("OnShow", function()
-        editBox:SetText(TalentReminderDB.message or TR.Defaults.message)
+        editBox:SetText((TalentReminderDB.message and TalentReminderDB.message ~= "") and TalentReminderDB.message or TR.Defaults.message)
         RefreshSoundDropdownText()
     end)
 
