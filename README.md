@@ -167,3 +167,14 @@ Currently included:
 | `/tr instances dragonflight` | Shows Dragonflight only. |
 | `/tr instances tww` | Shows The War Within only. |
 | `/tr instances midnight` | Shows Midnight only. |
+
+
+### Estructura interna / Internal structure
+
+`Core/Instances.lua` contiene únicamente la lógica utilizada por Talent Reminder para determinar si una `instanceID` está configurada o se considera Mundo.
+
+`Tools/InstanceDump.lua` contiene la herramienta de diagnóstico utilizada por `/tr instances`, incluyendo el recorrido por expansiones, mazmorras, bandas y Delves.
+
+`Core/Instances.lua` only contains the runtime logic used by Talent Reminder to determine whether an `instanceID` is tracked or considered World.
+
+`Tools/InstanceDump.lua` contains the `/tr instances` diagnostic utility, including expansion, dungeon, raid and Delve enumeration.

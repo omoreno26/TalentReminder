@@ -16,6 +16,8 @@ Core\Instances.lua
 Core\Sounds.lua
 Core\Reminder.lua
 
+Tools\InstanceDump.lua
+
 Options\Options.lua
 
 TalentReminder.lua
