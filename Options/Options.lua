@@ -178,9 +178,29 @@ local function BuildSoundMenu()
     soundMenuFrame:Show()
 end
 
+function TR.Options:RefreshMessage()
+    if not messageEditBox then
+        return
+    end
+
+    local value = TalentReminderDB and TalentReminderDB["message"]
+    if not value or value == "" then
+        value = TR.Defaults.message
+    end
+
+    messageEditBox:SetText(value)
+end
+
 function TR.Options:Open()
     if settingsCategory then
         Settings.OpenToCategory(settingsCategory.ID or panel.name)
+
+        -- Settings can show the canvas on the next frame, so refresh again
+        -- after opening to guarantee the SavedVariables value is visible.
+        C_Timer.After(0, function()
+            TR.Options:RefreshMessage()
+            RefreshSoundDropdownText()
+        end)
     end
 end
 
@@ -198,24 +218,24 @@ function TR.Options:Initialize()
 
     MakeLabel(panel, TR:T("messageLabel"), 24, -98)
 
-    local editBox = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
-    editBox:SetPoint("TOPLEFT", 24, -121)
-    editBox:SetSize(360, 32)
-    editBox:SetAutoFocus(false)
-    editBox:SetMaxLetters(120)
-    editBox:SetText(TalentReminderDB.message)
+    messageEditBox = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
+    messageEditBox:SetPoint("TOPLEFT", 24, -121)
+    messageEditBox:SetSize(360, 32)
+    messageEditBox:SetAutoFocus(false)
+    messageEditBox:SetMaxLetters(120)
+    TR.Options:RefreshMessage()
 
     local function SaveMessage()
-        local value = editBox:GetText()
+        local value = messageEditBox:GetText()
         if value == "" then
             value = TR.Defaults.message
-            editBox:SetText(value)
+            messageEditBox:SetText(value)
         end
         TalentReminderDB.message = value
         TR.Reminder:ApplyTextStyle()
     end
 
-    editBox:SetScript("OnTextChanged", function(self, userInput)
+    messageEditBox:SetScript("OnTextChanged", function(self, userInput)
         if not userInput then
             return
         end
@@ -231,14 +251,14 @@ function TR.Options:Initialize()
         end
     end)
 
-    editBox:SetScript("OnEnterPressed", function(self)
+    messageEditBox:SetScript("OnEnterPressed", function(self)
         SaveMessage()
         self:ClearFocus()
     end)
-    editBox:SetScript("OnEditFocusLost", SaveMessage)
+    messageEditBox:SetScript("OnEditFocusLost", SaveMessage)
 
     panel:SetScript("OnShow", function()
-        editBox:SetText((TalentReminderDB.message and TalentReminderDB.message ~= "") and TalentReminderDB.message or TR.Defaults.message)
+        TR.Options:RefreshMessage()
         RefreshSoundDropdownText()
     end)
 
