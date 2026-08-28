@@ -68,6 +68,20 @@ Los clientes `esES` y `esMX` utilizan español. Los demás idiomas utilizan ingl
 | `/tr move` | Activa o desactiva el modo para mover el recordatorio. |
 | `/tr id` | Muestra información de la instancia actual, incluida su `instanceID`. |
 | `/tr stop` | Detiene y oculta el recordatorio actual. |
+| `/tr instances` | Imprime mazmorras, bandas y Delves agrupadas por expansión. |
+| `/tr instances delves` | Muestra las Delves detectadas de The War Within y Midnight. Para obtener la InstanceID real de una Delve, usa `/tr id` dentro de ella. |
+| `/tr instances classic` | Muestra únicamente Classic. |
+| `/tr instances tbc` | Muestra únicamente The Burning Crusade. |
+| `/tr instances wotlk` | Muestra únicamente Wrath of the Lich King. |
+| `/tr instances cata` | Muestra únicamente Cataclysm. |
+| `/tr instances mop` | Muestra únicamente Mists of Pandaria. |
+| `/tr instances wod` | Muestra únicamente Warlords of Draenor. |
+| `/tr instances legion` | Muestra únicamente Legion. |
+| `/tr instances bfa` | Muestra únicamente Battle for Azeroth. |
+| `/tr instances shadowlands` | Muestra únicamente Shadowlands. |
+| `/tr instances dragonflight` | Muestra únicamente Dragonflight. |
+| `/tr instances tww` | Muestra únicamente The War Within. |
+| `/tr instances midnight` | Muestra únicamente Midnight. |
 
 ---
 
@@ -139,3 +153,17 @@ Currently included:
 | `/tr move` | Enables or disables reminder positioning mode. |
 | `/tr id` | Displays information about the current instance, including its `instanceID`. |
 | `/tr stop` | Stops and hides the current reminder. |
+| `/tr instances` | Prints dungeons, raids and Delves grouped by expansion. |
+| `/tr instances delves` | Shows detected The War Within and Midnight Delves. Use `/tr id` inside a Delve to get its real InstanceID. |
+| `/tr instances classic` | Shows Classic only. |
+| `/tr instances tbc` | Shows The Burning Crusade only. |
+| `/tr instances wotlk` | Shows Wrath of the Lich King only. |
+| `/tr instances cata` | Shows Cataclysm only. |
+| `/tr instances mop` | Shows Mists of Pandaria only. |
+| `/tr instances wod` | Shows Warlords of Draenor only. |
+| `/tr instances legion` | Shows Legion only. |
+| `/tr instances bfa` | Shows Battle for Azeroth only. |
+| `/tr instances shadowlands` | Shows Shadowlands only. |
+| `/tr instances dragonflight` | Shows Dragonflight only. |
+| `/tr instances tww` | Shows The War Within only. |
+| `/tr instances midnight` | Shows Midnight only. |

@@ -34,6 +34,19 @@ SlashCmdList["TALENTREMINDER"] = function(msg)
 
     if msg == "test" then
         TR.Reminder:Show()
+    elseif msg == "instances" or msg:match("^instances%s") then
+        local args = msg:match("^instances%s*(.-)%s*$") or ""
+        local first, second = args:match("^(%S+)%s*(%S*)$")
+
+        if not first or first == "" then
+            TR.Instances:PrintJournalInstances("all")
+        elseif first == "all" or first == "dungeons" or first == "dungeon"
+            or first == "raids" or first == "raid"
+            or first == "delves" or first == "delve" then
+            TR.Instances:PrintJournalInstances(first, second ~= "" and second or nil)
+        else
+            TR.Instances:PrintJournalInstances(second ~= "" and second or "all", first)
+        end
     elseif msg == "move" then
         TR.Reminder:SetMoveMode(not TR.Reminder:IsMoveMode())
         print("|cffffcc00Talent Reminder:|r " ..
