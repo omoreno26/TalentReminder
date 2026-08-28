@@ -199,6 +199,8 @@ function TR.Options:RefreshMessage()
     if messageEditBox:GetText() ~= value then
         messageEditBox:SetText(value)
     end
+
+    messageEditBox:SetTextColor(1, 1, 1, 1)
 end
 
 function TR.Options:Open()
@@ -233,7 +235,18 @@ function TR.Options:Initialize()
     messageEditBox:SetSize(360, 32)
     messageEditBox:SetAutoFocus(false)
     messageEditBox:SetMaxLetters(120)
-    TR.Options:RefreshMessage()
+
+    -- Keep the configured text visible even when the EditBox does not have
+    -- keyboard focus. Some WoW InputBoxTemplate states can dim the text.
+    messageEditBox:SetFontObject("ChatFontNormal")
+    messageEditBox:SetTextColor(1, 1, 1, 1)
+    messageEditBox:SetJustifyH("LEFT")
+
+    local initialMessage = TalentReminderDB and TalentReminderDB["message"]
+    if not initialMessage or initialMessage == "" then
+        initialMessage = TR.Defaults.message
+    end
+    messageEditBox:SetText(initialMessage)
 
     local function SaveMessage()
         local value = messageEditBox:GetText()
@@ -244,6 +257,14 @@ function TR.Options:Initialize()
         TalentReminderDB.message = value
         TR.Reminder:ApplyTextStyle()
     end
+
+    messageEditBox:HookScript("OnEditFocusGained", function(self)
+        self:SetTextColor(1, 1, 1, 1)
+    end)
+
+    messageEditBox:HookScript("OnEditFocusLost", function(self)
+        self:SetTextColor(1, 1, 1, 1)
+    end)
 
     messageEditBox:SetScript("OnTextChanged", function(self, userInput)
         if not userInput then
@@ -272,21 +293,9 @@ function TR.Options:Initialize()
         RefreshSoundDropdownText()
     end)
 
-    -- WoW's Settings canvas can keep this panel shown internally while the
-    -- user changes categories, so OnShow is not guaranteed to fire again.
-    -- While this panel is actually visible, keep the field synchronized with
-    -- SavedVariables unless the user is actively editing it.
-    local refreshElapsed = 0
-    panel:SetScript("OnUpdate", function(_, elapsed)
-        refreshElapsed = refreshElapsed + elapsed
-        if refreshElapsed < 0.20 then
-            return
-        end
-        refreshElapsed = 0
-
-        if messageEditBox and not messageEditBox:HasFocus() then
-            TR.Options:RefreshMessage()
-        end
+    -- Refresh the actual EditBox itself when WoW shows it.
+    messageEditBox:HookScript("OnShow", function()
+        TR.Options:RefreshMessage()
     end)
 
     MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 24, -176, 300,
