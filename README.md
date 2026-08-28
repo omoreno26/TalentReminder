@@ -18,7 +18,7 @@ El addon mantiene internamente una lista de `instanceID` configuradas.
 
 Para Talent Reminder:
 
-> **Mundo = cualquier `instanceID` que no esté incluida en la lista configurada.**
+> **Mundo = cuando WoW indica que el jugador está realmente fuera de una instancia (`instanceType = "none"`).**
 
 Cuando el aviso de **Mundo** ya se ha mostrado, cambiar entre otras zonas que también se consideran Mundo **no vuelve a mostrar el recordatorio**. El addon recuerda durante la sesión si el jugador ya estaba en Mundo.
 
@@ -95,7 +95,7 @@ The addon maintains an internal list of configured `instanceID` values.
 
 For Talent Reminder:
 
-> **World = any `instanceID` that is not included in the configured list.**
+> **World = when WoW reports that the player is actually outside an instance (`instanceType = "none"`).**
 
 Once the **World** reminder has been shown, moving between other zones that are also considered World **does not show the reminder again**. The addon remembers during the current session whether the player was already in World.
 

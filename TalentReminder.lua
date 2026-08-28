@@ -8,14 +8,22 @@ local lastInstanceID
 local lastWasWorld
 
 local function CheckCurrentInstance()
+    -- 1) World has priority. Ask WoW first, before checking any instanceID.
+    if TR.Instances:IsWorld() then
+        if TalentReminderDB.remindInWorld and not lastWasWorld then
+            TR.Reminder:Show()
+        end
+
+        lastInstanceID = nil
+        lastWasWorld = true
+        return
+    end
+
+    -- 2) We are inside an instance. Only now read/check its instanceID.
     local instanceName, instanceType, difficultyID, difficultyName,
           maxPlayers, dynamicDifficulty, isDynamic, instanceID = GetInstanceInfo()
 
-    local isTracked = TR.Instances:IsTracked(instanceID)
-    local isWorld = not isTracked
-
-    if isTracked then
-        -- Configured instances always show the reminder when entered.
+    if TR.Instances:IsTracked(instanceID) then
         TR.Reminder:Show()
 
         lastInstanceID = instanceID
@@ -23,18 +31,9 @@ local function CheckCurrentInstance()
         return
     end
 
-    if isWorld then
-        -- "World" means any instanceID not present in the tracked list.
-        -- Only show the reminder when ENTERING World from a configured
-        -- instance (or on the first world detection of this session).
-        -- Moving World -> World does not repeat the reminder.
-        if TalentReminderDB.remindInWorld and not lastWasWorld then
-            TR.Reminder:Show()
-        end
-
-        lastInstanceID = instanceID
-        lastWasWorld = true
-    end
+    -- 3) Untracked dungeon/raid/scenario/PvP/etc.: do nothing.
+    lastInstanceID = instanceID
+    lastWasWorld = false
 end
 
 local function PrintCurrentInstance()

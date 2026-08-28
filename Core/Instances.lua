@@ -2,6 +2,7 @@ local addonName, TR = ...
 
 TR.Instances = {}
 
+
 TR.Instances.Tracked = {
     -- ==================================================
     -- Classic
@@ -137,7 +138,7 @@ TR.Instances.Tracked = {
     -- Raids
     [1008] = true, -- Cámaras Mogu'shan
     [1009] = true, -- Corazón del Miedo
-    -- [] = -- Veranda de la Primavera Eterna // TODO
+    [996] = true, -- Veranda de la Primavera Eterna
     [1098] = true, -- Solio del Trueno
     [1136] = true, -- Asedio de Orgrimmar
 
@@ -154,7 +155,7 @@ TR.Instances.Tracked = {
     [1279] = true, -- El Vergel Eterno
     [1358] = true, -- Cumbre de Roca Negra Superior
     -- Raids
-    --  [99999999999999] = true, -- Ogrópolis // TODO
+    [1228] = true, -- Ogrópolis
     [1205] = true, -- Fundición Roca Negra
     [1448] = true, -- Ciudadela del Fuego Infernal
 
@@ -176,7 +177,7 @@ TR.Instances.Tracked = {
     [1677] = true, -- Catedral de la Noche Eterna
     [1753] = true, -- Trono del Triunvirato
     -- Raids
-    --  [99999999999999] = true, -- Pesadilla Esmeralda // TODO
+    [1520] = true, -- Pesadilla Esmeralda
     [1530] = true, -- Bastión Nocturno
     [1648] = true, -- Prueba del Valor
     [1676] = true, -- Tumba de Sargeras
@@ -198,7 +199,7 @@ TR.Instances.Tracked = {
     [1877] = true, -- Templo de Sethraliss
     [2097] = true, -- Operación: Mecandria
     -- Raids
-    --  [99999999999999] = true, -- Uldir // TODO
+    [1861] = true, -- Uldir
     [2070] = true, -- Batalla de Dazar'alor
     [2096] = true, -- Crisol de Tormentas
     [2164] = true, -- Palacio Eterno
@@ -280,13 +281,15 @@ TR.Instances.Tracked = {
     [2939] = true, -- La Falla Onírica
     [2987] = true, -- La Gruta Mareal
     [3004] = true, -- Abismo Venenoso
-    -- Delves
+    -- Delves -- TODO PENDIENTE
+    [2933] = true, --- Calamidad de Colegiado
 }
 
 function TR.Instances:IsTracked(instanceID)
     return instanceID and self.Tracked[instanceID] == true
 end
 
-function TR.Instances:IsWorld(instanceID)
-    return not self:IsTracked(instanceID)
+function TR.Instances:IsWorld()
+    local inInstance, instanceType = IsInInstance()
+    return not inInstance and instanceType == "none"
 end

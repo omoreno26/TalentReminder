@@ -225,6 +225,11 @@ function TR.Options:Initialize()
     end)
     editBox:SetScript("OnEditFocusLost", SaveMessage)
 
+    panel:SetScript("OnShow", function()
+        editBox:SetText(TalentReminderDB.message or TR.Defaults.message)
+        RefreshSoundDropdownText()
+    end)
+
     MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 24, -176, 300,
         function() return TalentReminderDB.fontSize end,
         function(v) TalentReminderDB.fontSize = v end,
