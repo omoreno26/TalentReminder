@@ -7,6 +7,8 @@ local soundDropdown
 local soundMenuFrame
 local settingsCategory
 local messageEditBox
+local colorDropdown
+local colorMenuFrame
 
 local function MakeLabel(parent, labelText, x, y)
     local label = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -203,6 +205,63 @@ function TR.Options:RefreshMessage()
     messageEditBox:SetTextColor(1, 1, 1, 1)
 end
 
+
+local function RefreshColorDropdownText()
+    if colorDropdown and colorDropdown.text then
+        local selected = TalentReminderDB.textColorOption or TR.Defaults.textColorOption
+        colorDropdown.text:SetText(TR:T("color" .. tostring(selected)))
+    end
+end
+
+local function SelectColorOption(index)
+    TalentReminderDB.textColorOption = index
+
+    if colorMenuFrame then
+        colorMenuFrame:Hide()
+    end
+
+    RefreshColorDropdownText()
+    TR.Reminder:ApplyTextStyle()
+end
+
+local function BuildColorMenu()
+    if colorMenuFrame then
+        colorMenuFrame:Hide()
+        colorMenuFrame:SetParent(nil)
+    end
+
+    colorMenuFrame = CreateFrame("Frame", nil, panel, "BackdropTemplate")
+    colorMenuFrame:SetFrameStrata("TOOLTIP")
+    colorMenuFrame:SetPoint("TOPLEFT", colorDropdown, "BOTTOMLEFT", 0, -2)
+    colorMenuFrame:SetSize(180, 104)
+
+    colorMenuFrame:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 16,
+        edgeSize = 16,
+        insets = { left = 4, right = 4, top = 4, bottom = 4 },
+    })
+
+    for index = 1, 4 do
+        local button = CreateFrame("Button", nil, colorMenuFrame)
+        button:SetPoint("TOPLEFT", 4, -4 - ((index - 1) * 24))
+        button:SetPoint("TOPRIGHT", -4, -4 - ((index - 1) * 24))
+        button:SetHeight(24)
+
+        local text = button:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        text:SetPoint("LEFT", 8, 0)
+        text:SetText(TR:T("color" .. tostring(index)))
+
+        button:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+
+        button:SetScript("OnClick", function()
+            SelectColorOption(index)
+        end)
+    end
+end
+
 function TR.Options:Open()
     if settingsCategory then
         Settings.OpenToCategory(settingsCategory.ID or panel.name)
@@ -220,17 +279,43 @@ function TR.Options:Initialize()
     panel = CreateFrame("Frame")
     panel.name = TR:T("title")
 
-    local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    -- The options are taller than the Settings canvas. Put the complete
+    -- options layout inside a vertical ScrollFrame so the bottom controls
+    -- always remain reachable.
+    local scrollFrame = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0)
+    scrollFrame:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -28, 0)
+    scrollFrame:EnableMouseWheel(true)
+
+    local content = CreateFrame("Frame", nil, scrollFrame)
+    content:SetSize(650, 760)
+    scrollFrame:SetScrollChild(content)
+
+    scrollFrame:SetScript("OnMouseWheel", function(self, delta)
+        local range = self:GetVerticalScrollRange()
+        local current = self:GetVerticalScroll()
+        local nextValue = current - (delta * 40)
+
+        if nextValue < 0 then
+            nextValue = 0
+        elseif nextValue > range then
+            nextValue = range
+        end
+
+        self:SetVerticalScroll(nextValue)
+    end)
+
+    local title = content:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 24, -24)
     title:SetText(TR:T("title"))
 
-    local subtitle = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    local subtitle = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
     subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
     subtitle:SetText(TR:T("subtitle"))
 
-    MakeLabel(panel, TR:T("messageLabel"), 24, -98)
+    MakeLabel(content, TR:T("messageLabel"), 24, -98)
 
-    messageEditBox = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
+    messageEditBox = CreateFrame("EditBox", nil, content, "InputBoxTemplate")
     messageEditBox:SetPoint("TOPLEFT", 24, -121)
     messageEditBox:SetSize(360, 32)
     messageEditBox:SetAutoFocus(false)
@@ -250,7 +335,7 @@ function TR.Options:Initialize()
 
     -- WoW's InputBoxTemplate can visually hide preloaded text until the field
     -- receives focus. Keep a separate display label on top while unfocused.
-    local messageDisplay = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    local messageDisplay = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     messageDisplay:SetPoint("LEFT", messageEditBox, "LEFT", 8, 0)
     messageDisplay:SetPoint("RIGHT", messageEditBox, "RIGHT", -8, 0)
     messageDisplay:SetJustifyH("LEFT")
@@ -327,13 +412,48 @@ function TR.Options:Initialize()
         RefreshMessageDisplay()
     end)
 
-    MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 24, -176, 300,
+    MakeLabel(content, TR:T("textColor"), 24, -176)
+
+    colorDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    colorDropdown:SetPoint("TOPLEFT", 24, -199)
+    colorDropdown:SetSize(180, 28)
+
+    colorDropdown.text = colorDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    colorDropdown.text:SetPoint("LEFT", 10, 0)
+    colorDropdown.text:SetPoint("RIGHT", -28, 0)
+    colorDropdown.text:SetJustifyH("LEFT")
+
+    local colorArrow = colorDropdown:CreateTexture(nil, "OVERLAY")
+    colorArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+    colorArrow:SetSize(20, 20)
+    colorArrow:SetPoint("RIGHT", colorDropdown, "RIGHT", -6, 0)
+
+    colorDropdown:SetScript("OnMouseDown", function()
+        colorArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
+    end)
+
+    colorDropdown:SetScript("OnMouseUp", function()
+        colorArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+    end)
+
+    colorDropdown:SetScript("OnClick", function()
+        if colorMenuFrame and colorMenuFrame:IsShown() then
+            colorMenuFrame:Hide()
+        else
+            BuildColorMenu()
+            colorMenuFrame:Show()
+        end
+    end)
+
+    RefreshColorDropdownText()
+
+    MakeSlider(content, TR:T("fontSize"), 12, 72, 1, 24, -246, 300,
         function() return TalentReminderDB.fontSize end,
         function(v) TalentReminderDB.fontSize = v end,
         function(v) return string.format("%d", v) end
     )
 
-    MakeSlider(panel, TR:T("duration"), 1, 15, 0.5, 24, -251, 300,
+    MakeSlider(content, TR:T("duration"), 1, 15, 0.5, 24, -321, 300,
         function() return TalentReminderDB.duration end,
         function(v)
             TalentReminderDB.duration = v
@@ -344,21 +464,21 @@ function TR.Options:Initialize()
         function(v) return string.format("%.1f s", v) end
     )
 
-    MakeSlider(panel, TR:T("fade"), 0, 5, 0.25, 24, -326, 300,
+    MakeSlider(content, TR:T("fade"), 0, 5, 0.25, 24, -396, 300,
         function() return TalentReminderDB.fadeTime end,
         function(v) TalentReminderDB.fadeTime = math.min(v, TalentReminderDB.duration) end,
         function(v) return string.format("%.2f s", v) end
     )
 
-    MakeCheckbox(panel, TR:T("world"), 20, -398,
+    MakeCheckbox(content, TR:T("world"), 20, -468,
         function() return TalentReminderDB.remindInWorld end,
         function(v) TalentReminderDB.remindInWorld = v end
     )
 
-    MakeLabel(panel, TR:T("sound"), 24, -441)
+    MakeLabel(content, TR:T("sound"), 24, -511)
 
-    soundDropdown = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    soundDropdown:SetPoint("TOPLEFT", 24, -464)
+    soundDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    soundDropdown:SetPoint("TOPLEFT", 24, -534)
     soundDropdown:SetSize(330, 30)
 
     soundDropdown.text = soundDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -391,12 +511,12 @@ function TR.Options:Initialize()
 
     RefreshSoundDropdownText()
 
-    local lsmStatus = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    local lsmStatus = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
     lsmStatus:SetPoint("TOPLEFT", soundDropdown, "BOTTOMLEFT", 0, -6)
     lsmStatus:SetText(TR.Sound:GetLSM() and TR:T("lsmFound") or TR:T("lsmMissing"))
 
-    local moveButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    moveButton:SetPoint("TOPLEFT", 24, -541)
+    local moveButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    moveButton:SetPoint("TOPLEFT", 24, -611)
     moveButton:SetSize(155, 30)
     moveButton:SetText(TR:T("move"))
 
@@ -405,7 +525,7 @@ function TR.Options:Initialize()
         self:SetText(TR.Reminder:IsMoveMode() and TR:T("lock") or TR:T("move"))
     end)
 
-    local testButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    local testButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
     testButton:SetPoint("LEFT", moveButton, "RIGHT", 12, 0)
     testButton:SetSize(155, 30)
     testButton:SetText(TR:T("test"))
@@ -420,7 +540,7 @@ function TR.Options:Initialize()
         TR.Reminder:Show()
     end)
 
-    local resetButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    local resetButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
     resetButton:SetPoint("LEFT", testButton, "RIGHT", 12, 0)
     resetButton:SetSize(155, 30)
     resetButton:SetText(TR:T("center"))
@@ -433,8 +553,8 @@ function TR.Options:Initialize()
         TR.Reminder:ApplyPosition()
     end)
 
-    local info = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", 24, -596)
+    local info = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    info:SetPoint("TOPLEFT", 24, -666)
     info:SetWidth(560)
     info:SetJustifyH("LEFT")
     info:SetText(TR:T("info"))

@@ -3,6 +3,7 @@ local addonName, TR = ...
 TR.Defaults = {
     message = "TALENT REMINDER!",
     fontSize = 36,
+    textColorOption = 1, -- Blanco / White
     duration = 5.0,
     fadeTime = 1.0,
     remindInWorld = false,
