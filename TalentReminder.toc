@@ -1,0 +1,21 @@
+## Interface: 120100
+## Title: Talent Reminder
+## Notes: Shows a configurable talent reminder when entering selected instances.
+## Author: ChatGPT
+## Version: 1.0.0
+## SavedVariables: TalentReminderDB
+
+Bootstrap.lua
+
+Locales\Locale.lua
+Locales\enUS.lua
+Locales\esES.lua
+
+Core\Defaults.lua
+Core\Instances.lua
+Core\Sounds.lua
+Core\Reminder.lua
+
+Options\Options.lua
+
+TalentReminder.lua
