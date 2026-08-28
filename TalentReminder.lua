@@ -2,17 +2,38 @@ local addonName, TR = ...
 
 local eventFrame = CreateFrame("Frame")
 
+-- Session state used to avoid repeating the World reminder while the player
+-- moves between different untracked instanceIDs.
+local lastInstanceID
+local lastWasWorld
+
 local function CheckCurrentInstance()
     local instanceName, instanceType, difficultyID, difficultyName,
           maxPlayers, dynamicDifficulty, isDynamic, instanceID = GetInstanceInfo()
 
-    if TR.Instances:IsTracked(instanceID) then
+    local isTracked = TR.Instances:IsTracked(instanceID)
+    local isWorld = not isTracked
+
+    if isTracked then
+        -- Configured instances always show the reminder when entered.
         TR.Reminder:Show()
+
+        lastInstanceID = instanceID
+        lastWasWorld = false
         return
     end
 
-    if TalentReminderDB.remindInWorld and TR.Instances:IsWorld(instanceID) then
-        TR.Reminder:Show()
+    if isWorld then
+        -- "World" means any instanceID not present in the tracked list.
+        -- Only show the reminder when ENTERING World from a configured
+        -- instance (or on the first world detection of this session).
+        -- Moving World -> World does not repeat the reminder.
+        if TalentReminderDB.remindInWorld and not lastWasWorld then
+            TR.Reminder:Show()
+        end
+
+        lastInstanceID = instanceID
+        lastWasWorld = true
     end
 end
 
