@@ -50,8 +50,12 @@ local function FindExpansionTier(value)
     end
 end
 
-local function PrintLine(line)
-    DEFAULT_CHAT_FRAME:AddMessage(line)
+local dumpWindow
+local dumpEditBox
+local dumpTitle
+
+local function AddLine(lines, text)
+    lines[#lines + 1] = text or ""
 end
 
 local function CollectJournalInstances(isRaid)
@@ -86,11 +90,12 @@ local function CollectJournalInstances(isRaid)
     return results
 end
 
-local function PrintInstanceTable(title, entries)
-    PrintLine("-- " .. title)
+local function AppendInstanceTable(lines, title, entries)
+    AddLine(lines, "-- " .. title)
 
     if #entries == 0 then
-        PrintLine("-- (none)")
+        AddLine(lines, "-- (none)")
+        AddLine(lines)
         return
     end
 
@@ -98,15 +103,14 @@ local function PrintInstanceTable(title, entries)
     for _, entry in ipairs(entries) do
         if not seen[entry.id] then
             seen[entry.id] = true
-            PrintLine(string.format("[%d] = true, -- %s", entry.id, entry.name))
+            AddLine(lines, string.format("[%d] = true, -- %s", entry.id, entry.name))
         end
     end
+
+    AddLine(lines)
 end
 
-
 local DELVE_EXPANSION_MAPS = {
-    -- Expansion root/continent UiMapIDs are discovered by name where possible.
-    -- These labels are intentionally English API-independent fallbacks.
     ["The War Within"] = true,
     ["Midnight"] = true,
 }
@@ -114,9 +118,6 @@ local DELVE_EXPANSION_MAPS = {
 local function FindExpansionRootMaps()
     local roots = {}
 
-    -- Traverse the cosmic map and collect maps whose localized names match
-    -- the expansions we care about. Delve POIs are then queried from every
-    -- descendant map.
     if not C_Map or not C_Map.GetMapChildrenInfo then
         return roots
     end
@@ -177,9 +178,6 @@ local function CollectDelvesForExpansion(rootMapID)
 
                     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, poiID)
                     if poiInfo then
-                        -- The POI's uiMapID identifies the entrance/world map.
-                        -- It is useful for discovery, but it is NOT guaranteed
-                        -- to equal GetInstanceInfo()'s instanceID.
                         local mapID = poiInfo.uiMapID or uiMapID
                         local key = tostring(mapID) .. ":" .. tostring(poiInfo.name)
 
@@ -207,15 +205,17 @@ local function CollectDelvesForExpansion(rootMapID)
     return results
 end
 
-local function PrintDelveTable(entries)
-    PrintLine("-- Delves")
+local function AppendDelves(lines, entries)
+    AddLine(lines, "-- Delves")
+
     if #entries == 0 then
-        PrintLine("-- (none found)")
+        AddLine(lines, "-- (none found)")
+        AddLine(lines)
         return
     end
 
     for _, entry in ipairs(entries) do
-        PrintLine(string.format(
+        AddLine(lines, string.format(
             "-- uiMapID %d, POI %d -- %s",
             entry.id,
             entry.poiID,
@@ -223,75 +223,41 @@ local function PrintDelveTable(entries)
         ))
     end
 
-    PrintLine("-- NOTE: Delve POI uiMapIDs are not guaranteed to be InstanceIDs.")
-    PrintLine("-- Use /tr id while inside a Delve to obtain its real GetInstanceInfo() InstanceID.")
+    AddLine(lines, "-- NOTE: Delve POI uiMapIDs are not guaranteed to be InstanceIDs.")
+    AddLine(lines, "-- Use /tr id while inside a Delve to get the real InstanceID.")
+    AddLine(lines)
 end
 
-function TR.InstanceDump:Print(mode, expansionArg)
-    mode = (mode or "all"):lower()
-
-    -- A single expansion name/alias can also be passed as the first argument.
-    local requestedTier = FindExpansionTier(expansionArg)
-    if not requestedTier then
-        local tierFromMode = FindExpansionTier(mode)
-        if tierFromMode then
-            requestedTier = tierFromMode
-            mode = "all"
-        end
-    end
-
-    local showDungeons = mode == "all" or mode == "" or mode == "dungeons" or mode == "dungeon"
-    local showRaids = mode == "all" or mode == "" or mode == "raids" or mode == "raid"
-    local showDelves = mode == "all" or mode == "" or mode == "delves" or mode == "delve"
-
-    if expansionArg and not requestedTier then
-        PrintLine("|cffffcc00Talent Reminder:|r unknown expansion: " .. tostring(expansionArg))
-        PrintLine("/tr instances [expansion] [all|dungeons|raids|delves]")
-        return
-    end
-
-    if not showDungeons and not showRaids and not showDelves then
-        PrintLine("|cffffcc00Talent Reminder:|r /tr instances [expansion] [all|dungeons|raids|delves]")
-        return
-    end
-
+local function BuildDumpText()
     if not EJ_GetInstanceByIndex or not EJ_SelectTier then
-        PrintLine("|cffff2020Talent Reminder:|r Encounter Journal API unavailable.")
-        return
+        return "Talent Reminder\n\nEncounter Journal API unavailable."
     end
 
+    local lines = {}
     local oldTier = EJ_GetCurrentTier and EJ_GetCurrentTier() or nil
     local maxTier = EJ_GetNumTiers and EJ_GetNumTiers() or #EXPANSIONS
+    local delveRoots = FindExpansionRootMaps()
 
-    PrintLine("|cffffcc00Talent Reminder - InstanceID dump|r")
-    PrintLine("-- Generated from WoW APIs")
+    AddLine(lines, "-- Talent Reminder - InstanceID dump")
+    AddLine(lines, "-- Generated from WoW APIs")
+    AddLine(lines)
 
-    local delveRoots = showDelves and FindExpansionRootMaps() or {}
-
-    local firstTier = requestedTier or 1
-    local lastTier = requestedTier or maxTier
-
-    for tier = firstTier, math.min(lastTier, maxTier) do
+    for tier = 1, math.min(maxTier, #EXPANSIONS) do
         EJ_SelectTier(tier)
 
         local expansion = EXPANSIONS[tier]
         local expansionName = expansion and expansion.name or ("Expansion " .. tostring(tier - 1))
 
-        PrintLine(" ")
-        PrintLine("-- ==================================================")
-        PrintLine("-- " .. expansionName)
-        PrintLine("-- ==================================================")
+        AddLine(lines, "-- ==================================================")
+        AddLine(lines, "-- " .. expansionName)
+        AddLine(lines, "-- ==================================================")
+        AddLine(lines)
 
-        if showDungeons then
-            PrintInstanceTable("-- Dungeons", CollectJournalInstances(false))
-        end
+        AppendInstanceTable(lines, "Dungeons", CollectJournalInstances(false))
+        AppendInstanceTable(lines, "Raids", CollectJournalInstances(true))
 
-        if showRaids then
-            PrintInstanceTable("-- Raids", CollectJournalInstances(true))
-        end
-
-        if showDelves and (expansionName == "The War Within" or expansionName == "Midnight") then
-            PrintDelveTable(CollectDelvesForExpansion(delveRoots[expansionName]))
+        if expansionName == "The War Within" or expansionName == "Midnight" then
+            AppendDelves(lines, CollectDelvesForExpansion(delveRoots[expansionName]))
         end
     end
 
@@ -299,6 +265,96 @@ function TR.InstanceDump:Print(mode, expansionArg)
         EJ_SelectTier(oldTier)
     end
 
-    PrintLine(" ")
-    PrintLine("|cff00ff00Talent Reminder:|r InstanceID dump finished.")
+    return table.concat(lines, "\n")
+end
+
+local function CreateDumpWindow()
+    if dumpWindow then
+        return
+    end
+
+    dumpWindow = CreateFrame("Frame", "TalentReminderInstanceDumpFrame", UIParent, "BackdropTemplate")
+    dumpWindow:SetSize(760, 620)
+    dumpWindow:SetPoint("CENTER")
+    dumpWindow:SetFrameStrata("DIALOG")
+    dumpWindow:SetMovable(true)
+    dumpWindow:SetClampedToScreen(true)
+    dumpWindow:EnableMouse(true)
+    dumpWindow:RegisterForDrag("LeftButton")
+
+    dumpWindow:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+        tile = true,
+        tileSize = 32,
+        edgeSize = 32,
+        insets = { left = 10, right = 10, top = 10, bottom = 10 },
+    })
+
+    dumpWindow:SetScript("OnDragStart", dumpWindow.StartMoving)
+    dumpWindow:SetScript("OnDragStop", dumpWindow.StopMovingOrSizing)
+
+    dumpTitle = dumpWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    dumpTitle:SetPoint("TOPLEFT", 20, -18)
+    dumpTitle:SetText("Talent Reminder - InstanceIDs")
+
+    local help = dumpWindow:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    help:SetPoint("TOPLEFT", dumpTitle, "BOTTOMLEFT", 0, -6)
+    help:SetText("Pulsa \"Copiar todo\" y después Ctrl+C")
+
+    local close = CreateFrame("Button", nil, dumpWindow, "UIPanelCloseButton")
+    close:SetPoint("TOPRIGHT", -4, -4)
+
+    local scroll = CreateFrame("ScrollFrame", nil, dumpWindow, "UIPanelScrollFrameTemplate")
+    scroll:SetPoint("TOPLEFT", 20, -62)
+    scroll:SetPoint("BOTTOMRIGHT", -38, 50)
+
+    dumpEditBox = CreateFrame("EditBox", nil, scroll)
+    dumpEditBox:SetMultiLine(true)
+    dumpEditBox:SetAutoFocus(false)
+    dumpEditBox:SetFontObject(ChatFontNormal)
+    dumpEditBox:SetWidth(680)
+    dumpEditBox:SetTextInsets(4, 4, 4, 4)
+    dumpEditBox:EnableMouse(true)
+
+    scroll:SetScrollChild(dumpEditBox)
+
+    dumpEditBox:SetScript("OnEscapePressed", function()
+        dumpEditBox:ClearFocus()
+        dumpWindow:Hide()
+    end)
+
+    dumpEditBox:SetScript("OnTextChanged", function(self)
+        local height = math.max(1, self:GetStringHeight() + 20)
+        self:SetHeight(height)
+    end)
+
+    local selectAll = CreateFrame("Button", nil, dumpWindow, "UIPanelButtonTemplate")
+    selectAll:SetSize(140, 26)
+    selectAll:SetPoint("BOTTOMLEFT", 20, 16)
+    selectAll:SetText("Copiar todo")
+    selectAll:SetScript("OnClick", function()
+        dumpEditBox:SetFocus()
+        dumpEditBox:HighlightText()
+    end)
+
+    local refresh = CreateFrame("Button", nil, dumpWindow, "UIPanelButtonTemplate")
+    refresh:SetSize(120, 26)
+    refresh:SetPoint("LEFT", selectAll, "RIGHT", 10, 0)
+    refresh:SetText("Actualizar")
+    refresh:SetScript("OnClick", function()
+        dumpEditBox:SetText(BuildDumpText())
+        dumpEditBox:SetCursorPosition(0)
+    end)
+
+    dumpWindow:Hide()
+end
+
+function TR.InstanceDump:Show()
+    CreateDumpWindow()
+
+    dumpEditBox:SetText(BuildDumpText())
+    dumpEditBox:SetCursorPosition(0)
+    dumpWindow:Show()
+    dumpWindow:Raise()
 end
