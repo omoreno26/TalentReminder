@@ -1,41 +1,28 @@
 local addonName, TR = ...
 
-TR.ColorPicker = {}
+TR.ColorPicker = TR.ColorPicker or {}
 
-local pickerFrame
+local rgbColorPicker
 
 local function Clamp255(value)
     value = tonumber(value) or 0
     value = math.floor(value + 0.5)
-
-    if value < 0 then
-        return 0
-    end
-
-    if value > 255 then
-        return 255
-    end
-
+    if value < 0 then return 0 end
+    if value > 255 then return 255 end
     return value
 end
 
-function TR.ColorPicker:EnsureTextColor()
+local function EnsureTextColor()
     TalentReminderDB.textColor = TalentReminderDB.textColor or {}
 
-    local defaults = TR.Defaults.textColor or {
-        r = 1,
-        g = 1,
-        b = 1,
-    }
+    local defaults = TR.Defaults.textColor or { r = 1, g = 1, b = 1 }
 
     if TalentReminderDB.textColor.r == nil then
         TalentReminderDB.textColor.r = defaults.r
     end
-
     if TalentReminderDB.textColor.g == nil then
         TalentReminderDB.textColor.g = defaults.g
     end
-
     if TalentReminderDB.textColor.b == nil then
         TalentReminderDB.textColor.b = defaults.b
     end
@@ -44,37 +31,29 @@ function TR.ColorPicker:EnsureTextColor()
 end
 
 function TR.ColorPicker:Open(anchorButton, previewTexture)
-    if pickerFrame then
-        pickerFrame:Hide()
-        pickerFrame:SetParent(nil)
-        pickerFrame = nil
+    if rgbColorPicker then
+        rgbColorPicker:Hide()
+        rgbColorPicker:SetParent(nil)
+        rgbColorPicker = nil
     end
 
-    local current = self:EnsureTextColor()
-    local oldR = current.r
-    local oldG = current.g
-    local oldB = current.b
+    local current = EnsureTextColor()
+    local oldR, oldG, oldB = current.r, current.g, current.b
 
     local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-    pickerFrame = frame
+    rgbColorPicker = frame
 
     frame:SetSize(300, 190)
     frame:SetFrameStrata("DIALOG")
     frame:SetClampedToScreen(true)
     frame:SetPoint("TOPLEFT", anchorButton, "BOTTOMLEFT", 0, -6)
-
     frame:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
         edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
         tile = true,
         tileSize = 32,
         edgeSize = 24,
-        insets = {
-            left = 8,
-            right = 8,
-            top = 8,
-            bottom = 8,
-        },
+        insets = { left = 8, right = 8, top = 8, bottom = 8 },
     })
 
     local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -115,7 +94,6 @@ function TR.ColorPicker:Open(anchorButton, previewTexture)
         local r = Clamp255(edits.r:GetText())
         local g = Clamp255(edits.g:GetText())
         local b = Clamp255(edits.b:GetText())
-
         return r, g, b
     end
 
@@ -163,7 +141,7 @@ function TR.ColorPicker:Open(anchorButton, previewTexture)
     ok:SetScript("OnClick", function()
         ApplyRGB()
         frame:Hide()
-        pickerFrame = nil
+        rgbColorPicker = nil
     end)
 
     local cancel = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
@@ -182,8 +160,7 @@ function TR.ColorPicker:Open(anchorButton, previewTexture)
         end
 
         TR.Reminder:ApplyTextStyle()
-
         frame:Hide()
-        pickerFrame = nil
+        rgbColorPicker = nil
     end)
 end

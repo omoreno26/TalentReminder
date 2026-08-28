@@ -334,15 +334,22 @@ function TR.Options:Initialize()
     colorPreview:SetSize(34, 22)
     colorPreview:SetPoint("TOPLEFT", 24, -200)
 
-    local currentColor = TR.ColorPicker:EnsureTextColor()
-    colorPreview:SetColorTexture(currentColor.r, currentColor.g, currentColor.b, 1)
+    local currentColor = TalentReminderDB.textColor or TR.Defaults.textColor
+    colorPreview:SetColorTexture(
+        currentColor.r or 1,
+        currentColor.g or 1,
+        currentColor.b or 1,
+        1
+    )
 
     local colorButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
     colorButton:SetPoint("LEFT", colorPreview, "RIGHT", 10, 0)
     colorButton:SetSize(140, 26)
     colorButton:SetText(TR:T("chooseColor"))
     colorButton:SetScript("OnClick", function()
-        TR.ColorPicker:Open(colorButton, colorPreview)
+        if TR.ColorPicker and TR.ColorPicker.Open then
+            TR.ColorPicker:Open(colorButton, colorPreview)
+        end
     end)
 
     MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 24, -246, 300,
