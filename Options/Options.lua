@@ -264,9 +264,20 @@ function TR.Options:Initialize()
     soundDropdown.text:SetPoint("RIGHT", -28, 0)
     soundDropdown.text:SetJustifyH("LEFT")
 
-    local arrow = soundDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    arrow:SetPoint("RIGHT", -10, 0)
-    arrow:SetText("▼")
+    -- Dropdown arrow: use WoW's texture instead of a font glyph.
+    -- The old "▼" character could be invisible with some client fonts.
+    local arrow = soundDropdown:CreateTexture(nil, "OVERLAY")
+    arrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+    arrow:SetSize(20, 20)
+    arrow:SetPoint("RIGHT", soundDropdown, "RIGHT", -6, 0)
+
+    soundDropdown:SetScript("OnMouseDown", function()
+        arrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
+    end)
+
+    soundDropdown:SetScript("OnMouseUp", function()
+        arrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+    end)
 
     soundDropdown:SetScript("OnClick", function()
         if soundMenuFrame and soundMenuFrame:IsShown() then
