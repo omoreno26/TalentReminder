@@ -196,10 +196,6 @@ function TR.Options:Initialize()
     subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
     subtitle:SetText(TR:T("subtitle"))
 
-    local localeInfo = panel:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
-    localeInfo:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -4)
-    localeInfo:SetText("Locale: " .. tostring(GetLocale()))
-
     MakeLabel(panel, TR:T("messageLabel"), 24, -98)
 
     local editBox = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
