@@ -248,6 +248,29 @@ function TR.Options:Initialize()
     end
     messageEditBox:SetText(initialMessage)
 
+    -- WoW's InputBoxTemplate can visually hide preloaded text until the field
+    -- receives focus. Keep a separate display label on top while unfocused.
+    local messageDisplay = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    messageDisplay:SetPoint("LEFT", messageEditBox, "LEFT", 8, 0)
+    messageDisplay:SetPoint("RIGHT", messageEditBox, "RIGHT", -8, 0)
+    messageDisplay:SetJustifyH("LEFT")
+    messageDisplay:SetText(initialMessage)
+
+    local function RefreshMessageDisplay()
+        local value = TalentReminderDB and TalentReminderDB["message"]
+        if not value or value == "" then
+            value = TR.Defaults.message
+        end
+
+        messageDisplay:SetText(value)
+
+        if messageEditBox:HasFocus() then
+            messageDisplay:Hide()
+        else
+            messageDisplay:Show()
+        end
+    end
+
     local function SaveMessage()
         local value = messageEditBox:GetText()
         if value == "" then
@@ -260,10 +283,12 @@ function TR.Options:Initialize()
 
     messageEditBox:HookScript("OnEditFocusGained", function(self)
         self:SetTextColor(1, 1, 1, 1)
+        messageDisplay:Hide()
     end)
 
     messageEditBox:HookScript("OnEditFocusLost", function(self)
         self:SetTextColor(1, 1, 1, 1)
+        RefreshMessageDisplay()
     end)
 
     messageEditBox:SetScript("OnTextChanged", function(self, userInput)
@@ -278,6 +303,7 @@ function TR.Options:Initialize()
         -- while editing, keep the previous saved value until focus is lost.
         if value ~= "" then
             TalentReminderDB.message = value
+            messageDisplay:SetText(value)
             TR.Reminder:ApplyTextStyle()
         end
     end)
@@ -288,14 +314,17 @@ function TR.Options:Initialize()
     end)
     messageEditBox:SetScript("OnEditFocusLost", SaveMessage)
 
+    RefreshMessageDisplay()
+
     panel:HookScript("OnShow", function()
         TR.Options:RefreshMessage()
+        RefreshMessageDisplay()
         RefreshSoundDropdownText()
     end)
 
-    -- Refresh the actual EditBox itself when WoW shows it.
     messageEditBox:HookScript("OnShow", function()
         TR.Options:RefreshMessage()
+        RefreshMessageDisplay()
     end)
 
     MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 24, -176, 300,
