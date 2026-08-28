@@ -135,9 +135,9 @@ TR.Instances.Tracked = {
     [1007] = true, -- Scholomance
     [1011] = true, -- Asedio del Templo de Niuzao
     -- Raids
-    [996] = true, -- Pandaria
     [1008] = true, -- Cámaras Mogu'shan
     [1009] = true, -- Corazón del Miedo
+    -- [] = -- Veranda de la Primavera Eterna // TODO
     [1098] = true, -- Solio del Trueno
     [1136] = true, -- Asedio de Orgrimmar
 
@@ -154,8 +154,8 @@ TR.Instances.Tracked = {
     [1279] = true, -- El Vergel Eterno
     [1358] = true, -- Cumbre de Roca Negra Superior
     -- Raids
+    --  [99999999999999] = true, -- Ogrópolis // TODO
     [1205] = true, -- Fundición Roca Negra
-    [1228] = true, -- Draenor
     [1448] = true, -- Ciudadela del Fuego Infernal
 
     -- ==================================================
@@ -176,7 +176,7 @@ TR.Instances.Tracked = {
     [1677] = true, -- Catedral de la Noche Eterna
     [1753] = true, -- Trono del Triunvirato
     -- Raids
-    [1520] = true, -- Islas Abruptas
+    --  [99999999999999] = true, -- Pesadilla Esmeralda // TODO
     [1530] = true, -- Bastión Nocturno
     [1648] = true, -- Prueba del Valor
     [1676] = true, -- Tumba de Sargeras
@@ -198,7 +198,7 @@ TR.Instances.Tracked = {
     [1877] = true, -- Templo de Sethraliss
     [2097] = true, -- Operación: Mecandria
     -- Raids
-    [1861] = true, -- Azeroth
+    --  [99999999999999] = true, -- Uldir // TODO
     [2070] = true, -- Batalla de Dazar'alor
     [2096] = true, -- Crisol de Tormentas
     [2164] = true, -- Palacio Eterno
@@ -220,8 +220,7 @@ TR.Instances.Tracked = {
     -- Raids
     [2296] = true, -- Castillo de Nathria
     [2450] = true, -- Sagrario de Dominación
-    [2481] = true, -- Sepulcro de los Primeros
-    [2559] = true, -- Tierras Sombrías
+    [2481] = true, -- Sepulcro de los Primeros    
  
     -- ==================================================
     -- Dragonflight
@@ -239,8 +238,7 @@ TR.Instances.Tracked = {
     -- Raids
     [2522] = true, -- Cámara de las Encarnaciones
     [2549] = true, -- Amirdrassil, la Esperanza del Sueño
-    [2569] = true, -- Aberrus, el Crisol Ensombrecido
-    [2574] = true, -- Islas Dragón
+    [2569] = true, -- Aberrus, el Crisol Ensombrecido    
  
     -- ==================================================
     -- The War Within
@@ -258,12 +256,9 @@ TR.Instances.Tracked = {
     [2830] = true, -- Ecodomo Al'dani
     -- Raids
     [2657] = true, -- Palacio Nerub'ar
-    [2769] = true, -- Liberación de Minahonda
-    [2774] = true, -- Khaz Algar
+    [2769] = true, -- Liberación de Minahonda    
     [2810] = true, -- Forja de Maná Omega
-
-    -- Delves
-    
+    -- Delves    
 
     -- ==================================================
     -- Midnight
