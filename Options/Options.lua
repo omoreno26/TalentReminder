@@ -6,6 +6,7 @@ local panel
 local soundDropdown
 local soundMenuFrame
 local settingsCategory
+local messageEditBox
 
 local function MakeLabel(parent, labelText, x, y)
     local label = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -178,17 +179,26 @@ local function BuildSoundMenu()
     soundMenuFrame:Show()
 end
 
+local function GetConfiguredMessage()
+    local value = TalentReminderDB and TalentReminderDB["message"]
+
+    if not value or value == "" then
+        return TR.Defaults.message
+    end
+
+    return value
+end
+
 function TR.Options:RefreshMessage()
     if not messageEditBox then
         return
     end
 
-    local value = TalentReminderDB and TalentReminderDB["message"]
-    if not value or value == "" then
-        value = TR.Defaults.message
-    end
+    local value = GetConfiguredMessage()
 
-    messageEditBox:SetText(value)
+    if messageEditBox:GetText() ~= value then
+        messageEditBox:SetText(value)
+    end
 end
 
 function TR.Options:Open()
@@ -257,9 +267,26 @@ function TR.Options:Initialize()
     end)
     messageEditBox:SetScript("OnEditFocusLost", SaveMessage)
 
-    panel:SetScript("OnShow", function()
+    panel:HookScript("OnShow", function()
         TR.Options:RefreshMessage()
         RefreshSoundDropdownText()
+    end)
+
+    -- WoW's Settings canvas can keep this panel shown internally while the
+    -- user changes categories, so OnShow is not guaranteed to fire again.
+    -- While this panel is actually visible, keep the field synchronized with
+    -- SavedVariables unless the user is actively editing it.
+    local refreshElapsed = 0
+    panel:SetScript("OnUpdate", function(_, elapsed)
+        refreshElapsed = refreshElapsed + elapsed
+        if refreshElapsed < 0.20 then
+            return
+        end
+        refreshElapsed = 0
+
+        if messageEditBox and not messageEditBox:HasFocus() then
+            TR.Options:RefreshMessage()
+        end
     end)
 
     MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 24, -176, 300,

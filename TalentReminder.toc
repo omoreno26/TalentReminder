@@ -1,8 +1,8 @@
 ## Interface: 120100
 ## Title: Talent Reminder
 ## Notes: Shows a configurable talent reminder when entering selected instances.
-## Author: Nazgul
-## Version: 1.0.0
+## Author: ChatGPT
+## Version: 2.2.5
 ## SavedVariables: TalentReminderDB
 
 Bootstrap.lua
