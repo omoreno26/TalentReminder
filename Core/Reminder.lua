@@ -35,9 +35,6 @@ function TR.Reminder:ApplyTextStyle()
         "OUTLINE"
     )
     text:SetText(TalentReminderDB.message or "TALENT REMINDER!")
-    local color = TalentReminderDB.textColor or TR.Defaults.textColor
-    self.text:SetTextColor(color.r or 1, color.g or 1, color.b or 1, 1)
-
 end
 
 function TR.Reminder:SavePosition()

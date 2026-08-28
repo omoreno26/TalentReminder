@@ -25,8 +25,3 @@ L["moveOn"] = "modo mover activado."
 L["moveOff"] = "modo mover desactivado."
 L["instance"] = "Instancia"
 L["worldInfo"] = "Mundo = cuando WoW indica que no estás dentro de una instancia."
-
-L["textColor"] = "Color del texto"
-L["chooseColor"] = "Elegir color"
-L["accept"] = "Aceptar"
-L["cancel"] = "Cancelar"
