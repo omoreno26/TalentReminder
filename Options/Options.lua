@@ -578,10 +578,19 @@ function TR.Options:Initialize()
     expansionDropdown.text:SetPoint("RIGHT", -28, 0)
     expansionDropdown.text:SetJustifyH("LEFT")
 
+    -- Same native WoW dropdown arrow used by Color and Sound.
     local expansionArrow = expansionDropdown:CreateTexture(nil, "OVERLAY")
-    expansionArrow:SetTexture("Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up")
+    expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
     expansionArrow:SetSize(20, 20)
     expansionArrow:SetPoint("RIGHT", expansionDropdown, "RIGHT", -6, 0)
+
+    expansionDropdown:SetScript("OnMouseDown", function()
+        expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
+    end)
+
+    expansionDropdown:SetScript("OnMouseUp", function()
+        expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+    end)
 
     expansionDropdown:SetScript("OnClick", function()
         local wasOpen = expansionMenuFrame and expansionMenuFrame:IsShown()
