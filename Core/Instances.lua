@@ -259,6 +259,12 @@ TR.Instances.ByExpansion = {
         [2933] = true, --- Calamidad de Colegiado
     },
 
+    -- Temporada actual / Current Season
+    -- Este grupo es independiente de la expansión original de la instancia.
+    CURRENT_SEASON = {
+        [2805] = true, -- Aguja Brisaveloz
+    },
+
 }
 
 function TR.Instances:IsTracked(instanceID)

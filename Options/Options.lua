@@ -12,6 +12,20 @@ local colorMenuFrame
 local expansionDropdown
 local expansionMenuFrame
 
+local function HideAllDropdownMenus(exceptMenu)
+    if colorMenuFrame and colorMenuFrame ~= exceptMenu then
+        colorMenuFrame:Hide()
+    end
+
+    if expansionMenuFrame and expansionMenuFrame ~= exceptMenu then
+        expansionMenuFrame:Hide()
+    end
+
+    if soundMenuFrame and soundMenuFrame ~= exceptMenu then
+        soundMenuFrame:Hide()
+    end
+end
+
 local function MakeLabel(parent, labelText, x, y)
     local label = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     label:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
@@ -40,7 +54,12 @@ local function MakeSlider(parent, labelText, minValue, maxValue, step, x, y, wid
         valueText:SetText(formatter and formatter(value) or tostring(value))
     end
 
+    slider:SetScript("OnMouseDown", function()
+        HideAllDropdownMenus()
+    end)
+
     slider:SetScript("OnValueChanged", function(_, value)
+        HideAllDropdownMenus()
         local rounded = math.floor((value / step) + 0.5) * step
         setValue(rounded)
         RefreshValue(rounded)
@@ -63,6 +82,7 @@ local function MakeCheckbox(parent, labelText, x, y, getValue, setValue)
     label:SetText(labelText)
 
     checkbox:SetScript("OnClick", function(self)
+        HideAllDropdownMenus()
         setValue(self:GetChecked() and true or false)
     end)
 
@@ -96,7 +116,7 @@ local function BuildSoundMenu()
     soundMenuFrame = CreateFrame("Frame", nil, panel, "BackdropTemplate")
     soundMenuFrame:SetFrameStrata("TOOLTIP")
     soundMenuFrame:SetPoint("TOPLEFT", soundDropdown, "BOTTOMLEFT", 0, -2)
-    soundMenuFrame:SetWidth(330)
+    soundMenuFrame:SetWidth(260)
     soundMenuFrame:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -264,20 +284,19 @@ local function BuildColorMenu()
     end
 end
 
-local expansionEntries = {
-    { key = "CLASSIC", label = "Classic" },
-    { key = "TBC", label = "The Burning Crusade" },
-    { key = "WOTLK", label = "Wrath of the Lich King" },
-    { key = "CATACLYSM", label = "Cataclysm" },
-    { key = "MOP", label = "Mists of Pandaria" },
-    { key = "WOD", label = "Warlords of Draenor" },
-    { key = "LEGION", label = "Legion" },
-    { key = "BFA", label = "Battle for Azeroth" },
-    { key = "SHADOWLANDS", label = "Shadowlands" },
-    { key = "DRAGONFLIGHT", label = "Dragonflight" },
-    { key = "TWW", label = "The War Within" },
-    { key = "MIDNIGHT", label = "Midnight" },
-}
+local expansionEntries = TR.Expansions.Entries
+
+local function IsExpansionEntryEnabled(entry)
+    return TR.Expansions:IsEnabled(entry)
+end
+
+local function SetExpansionEntryEnabled(entry, enabled)
+    TR.Expansions:SetEnabled(entry, enabled)
+end
+
+local function GetExpansionEntryLabel(entry)
+    return TR.Expansions:GetLabel(entry)
+end
 
 local function RefreshExpansionDropdownText()
     if not expansionDropdown or not expansionDropdown.text then
@@ -286,7 +305,7 @@ local function RefreshExpansionDropdownText()
 
     local selected = 0
     for _, entry in ipairs(expansionEntries) do
-        if TalentReminderDB.expansions[entry.key] ~= false then
+        if IsExpansionEntryEnabled(entry) then
             selected = selected + 1
         end
     end
@@ -307,7 +326,7 @@ local function BuildExpansionMenu()
     expansionMenuFrame = CreateFrame("Frame", nil, panel, "BackdropTemplate")
     expansionMenuFrame:SetFrameStrata("TOOLTIP")
     expansionMenuFrame:SetPoint("TOPLEFT", expansionDropdown, "BOTTOMLEFT", 0, -2)
-    expansionMenuFrame:SetSize(260, 330)
+    expansionMenuFrame:SetSize(260, 378)
     expansionMenuFrame:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -325,7 +344,7 @@ local function BuildExpansionMenu()
 
     local function RefreshAllCheck()
         for _, entry in ipairs(expansionEntries) do
-            if TalentReminderDB.expansions[entry.key] == false then
+            if not IsExpansionEntryEnabled(entry) then
                 all:SetChecked(false)
                 return
             end
@@ -336,7 +355,7 @@ local function BuildExpansionMenu()
     all:SetScript("OnClick", function(self)
         local enabled = self:GetChecked() and true or false
         for _, entry in ipairs(expansionEntries) do
-            TalentReminderDB.expansions[entry.key] = enabled
+            SetExpansionEntryEnabled(entry, enabled)
         end
         BuildExpansionMenu()
         RefreshExpansionDropdownText()
@@ -345,14 +364,14 @@ local function BuildExpansionMenu()
     for index, entry in ipairs(expansionEntries) do
         local checkbox = CreateFrame("CheckButton", nil, expansionMenuFrame, "UICheckButtonTemplate")
         checkbox:SetPoint("TOPLEFT", 8, -8 - (index * 24))
-        checkbox:SetChecked(TalentReminderDB.expansions[entry.key] ~= false)
+        checkbox:SetChecked(IsExpansionEntryEnabled(entry))
 
         local label = checkbox:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
         label:SetPoint("LEFT", checkbox, "RIGHT", 4, 0)
-        label:SetText(entry.label)
+        label:SetText(GetExpansionEntryLabel(entry))
 
         checkbox:SetScript("OnClick", function(self)
-            TalentReminderDB.expansions[entry.key] = self:GetChecked() and true or false
+            SetExpansionEntryEnabled(entry, self:GetChecked() and true or false)
             RefreshAllCheck()
             RefreshExpansionDropdownText()
         end)
@@ -380,43 +399,17 @@ function TR.Options:Initialize()
     panel = CreateFrame("Frame")
     panel.name = TR:T("title")
 
-    -- The options are taller than the Settings canvas. Put the complete
-    -- options layout inside a vertical ScrollFrame so the bottom controls
-    -- always remain reachable.
-    local scrollFrame = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0)
-    scrollFrame:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -28, 0)
-    scrollFrame:EnableMouseWheel(true)
-
-    local content = CreateFrame("Frame", nil, scrollFrame)
-    content:SetSize(650, 840)
-    scrollFrame:SetScrollChild(content)
-
-    scrollFrame:SetScript("OnMouseWheel", function(self, delta)
-        local range = self:GetVerticalScrollRange()
-        local current = self:GetVerticalScroll()
-        local nextValue = current - (delta * 40)
-
-        if nextValue < 0 then
-            nextValue = 0
-        elseif nextValue > range then
-            nextValue = range
-        end
-
-        self:SetVerticalScroll(nextValue)
-    end)
-
-    local title = content:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 24, -24)
     title:SetText(TR:T("title"))
 
-    local subtitle = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    local subtitle = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
     subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
     subtitle:SetText(TR:T("subtitle"))
 
-    MakeLabel(content, TR:T("messageLabel"), 24, -98)
+    MakeLabel(panel, TR:T("messageLabel"), 24, -98)
 
-    messageEditBox = CreateFrame("EditBox", nil, content, "InputBoxTemplate")
+    messageEditBox = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
     messageEditBox:SetPoint("TOPLEFT", 24, -121)
     messageEditBox:SetSize(360, 32)
     messageEditBox:SetAutoFocus(false)
@@ -436,7 +429,7 @@ function TR.Options:Initialize()
 
     -- WoW's InputBoxTemplate can visually hide preloaded text until the field
     -- receives focus. Keep a separate display label on top while unfocused.
-    local messageDisplay = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    local messageDisplay = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     messageDisplay:SetPoint("LEFT", messageEditBox, "LEFT", 8, 0)
     messageDisplay:SetPoint("RIGHT", messageEditBox, "RIGHT", -8, 0)
     messageDisplay:SetJustifyH("LEFT")
@@ -468,6 +461,7 @@ function TR.Options:Initialize()
     end
 
     messageEditBox:HookScript("OnEditFocusGained", function(self)
+        HideAllDropdownMenus()
         self:SetTextColor(1, 1, 1, 1)
         messageDisplay:Hide()
     end)
@@ -514,11 +508,11 @@ function TR.Options:Initialize()
         RefreshMessageDisplay()
     end)
 
-    MakeLabel(content, TR:T("textColor"), 24, -176)
+    MakeLabel(panel, TR:T("textColor"), 24, -176)
 
-    colorDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    colorDropdown = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
     colorDropdown:SetPoint("TOPLEFT", 24, -199)
-    colorDropdown:SetSize(180, 28)
+    colorDropdown:SetSize(260, 30)
 
     colorDropdown.text = colorDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     colorDropdown.text:SetPoint("LEFT", 10, 0)
@@ -539,9 +533,10 @@ function TR.Options:Initialize()
     end)
 
     colorDropdown:SetScript("OnClick", function()
-        if colorMenuFrame and colorMenuFrame:IsShown() then
-            colorMenuFrame:Hide()
-        else
+        local wasOpen = colorMenuFrame and colorMenuFrame:IsShown()
+        HideAllDropdownMenus()
+
+        if not wasOpen then
             BuildColorMenu()
             colorMenuFrame:Show()
         end
@@ -549,13 +544,13 @@ function TR.Options:Initialize()
 
     RefreshColorDropdownText()
 
-    MakeSlider(content, TR:T("fontSize"), 12, 72, 1, 24, -246, 300,
+    MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 340, -176, 220,
         function() return TalentReminderDB.fontSize end,
         function(v) TalentReminderDB.fontSize = v end,
         function(v) return string.format("%d", v) end
     )
 
-    MakeSlider(content, TR:T("duration"), 1, 15, 0.5, 24, -321, 300,
+    MakeSlider(panel, TR:T("duration"), 1, 15, 0.5, 24, -251, 220,
         function() return TalentReminderDB.duration end,
         function(v)
             TalentReminderDB.duration = v
@@ -566,21 +561,16 @@ function TR.Options:Initialize()
         function(v) return string.format("%.1f s", v) end
     )
 
-    MakeSlider(content, TR:T("fade"), 0, 5, 0.25, 24, -396, 300,
+    MakeSlider(panel, TR:T("fade"), 0, 5, 0.25, 340, -251, 220,
         function() return TalentReminderDB.fadeTime end,
         function(v) TalentReminderDB.fadeTime = math.min(v, TalentReminderDB.duration) end,
         function(v) return string.format("%.2f s", v) end
     )
 
-    MakeCheckbox(content, TR:T("world"), 20, -468,
-        function() return TalentReminderDB.remindInWorld end,
-        function(v) TalentReminderDB.remindInWorld = v end
-    )
+    MakeLabel(panel, TR:T("expansions"), 24, -326)
 
-    MakeLabel(content, TR:T("expansions"), 24, -511)
-
-    expansionDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-    expansionDropdown:SetPoint("TOPLEFT", 24, -534)
+    expansionDropdown = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    expansionDropdown:SetPoint("TOPLEFT", 24, -349)
     expansionDropdown:SetSize(260, 30)
 
     expansionDropdown.text = expansionDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -594,20 +584,21 @@ function TR.Options:Initialize()
     expansionArrow:SetPoint("RIGHT", expansionDropdown, "RIGHT", -6, 0)
 
     expansionDropdown:SetScript("OnClick", function()
-        if expansionMenuFrame and expansionMenuFrame:IsShown() then
-            expansionMenuFrame:Hide()
-        else
+        local wasOpen = expansionMenuFrame and expansionMenuFrame:IsShown()
+        HideAllDropdownMenus()
+
+        if not wasOpen then
             BuildExpansionMenu()
         end
     end)
 
     RefreshExpansionDropdownText()
 
-    MakeLabel(content, TR:T("sound"), 24, -586)
+    MakeLabel(panel, TR:T("sound"), 340, -326)
 
-    soundDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-    soundDropdown:SetPoint("TOPLEFT", 24, -609)
-    soundDropdown:SetSize(330, 30)
+    soundDropdown = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    soundDropdown:SetPoint("TOPLEFT", 340, -349)
+    soundDropdown:SetSize(260, 30)
 
     soundDropdown.text = soundDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     soundDropdown.text:SetPoint("LEFT", 12, 0)
@@ -630,35 +621,34 @@ function TR.Options:Initialize()
     end)
 
     soundDropdown:SetScript("OnClick", function()
-        if soundMenuFrame and soundMenuFrame:IsShown() then
-            soundMenuFrame:Hide()
-        else
+        local wasOpen = soundMenuFrame and soundMenuFrame:IsShown()
+        HideAllDropdownMenus()
+
+        if not wasOpen then
             BuildSoundMenu()
         end
     end)
 
     RefreshSoundDropdownText()
 
-    local lsmStatus = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    lsmStatus:SetPoint("TOPLEFT", soundDropdown, "BOTTOMLEFT", 0, -6)
-    lsmStatus:SetText(TR.Sound:GetLSM() and TR:T("lsmFound") or TR:T("lsmMissing"))
-
-    local moveButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-    moveButton:SetPoint("TOPLEFT", 24, -686)
+    local moveButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    moveButton:SetPoint("TOPLEFT", 24, -467)
     moveButton:SetSize(155, 30)
     moveButton:SetText(TR:T("move"))
 
     moveButton:SetScript("OnClick", function(self)
+        HideAllDropdownMenus()
         TR.Reminder:SetMoveMode(not TR.Reminder:IsMoveMode())
         self:SetText(TR.Reminder:IsMoveMode() and TR:T("lock") or TR:T("move"))
     end)
 
-    local testButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    local testButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
     testButton:SetPoint("LEFT", moveButton, "RIGHT", 12, 0)
     testButton:SetSize(155, 30)
     testButton:SetText(TR:T("test"))
 
     testButton:SetScript("OnClick", function()
+        HideAllDropdownMenus()
         if TR.Reminder:IsMoveMode() then
             TR.Reminder:SavePosition()
             TR.Reminder:SetMoveMode(false)
@@ -668,12 +658,13 @@ function TR.Options:Initialize()
         TR.Reminder:Show()
     end)
 
-    local resetButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    local resetButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
     resetButton:SetPoint("LEFT", testButton, "RIGHT", 12, 0)
     resetButton:SetSize(155, 30)
     resetButton:SetText(TR:T("center"))
 
     resetButton:SetScript("OnClick", function()
+        HideAllDropdownMenus()
         TalentReminderDB.point = TR.Defaults.point
         TalentReminderDB.relativePoint = TR.Defaults.relativePoint
         TalentReminderDB.posX = TR.Defaults.posX
@@ -681,11 +672,16 @@ function TR.Options:Initialize()
         TR.Reminder:ApplyPosition()
     end)
 
-    local info = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", 24, -741)
+    local info = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    info:SetPoint("TOPLEFT", 24, -522)
     info:SetWidth(560)
     info:SetJustifyH("LEFT")
     info:SetText(TR:T("info"))
+
+
+    panel:HookScript("OnHide", function()
+        HideAllDropdownMenus()
+    end)
 
     settingsCategory = Settings.RegisterCanvasLayoutCategory(panel, panel.name)
     settingsCategory.ID = panel.name

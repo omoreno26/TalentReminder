@@ -21,6 +21,7 @@ TR.Defaults = {
         DRAGONFLIGHT = true,
         TWW = true,
         MIDNIGHT = true,
+        CURRENT_SEASON = true,
     },
 
     soundType = "WOW",

@@ -2,30 +2,61 @@
 
 ## Español
 
-**Talent Reminder** es un addon para World of Warcraft diseñado para mostrar un recordatorio visual al cambiar de zona o entrar en determinadas instancias.
+**Talent Reminder** es un addon para World of Warcraft que muestra un recordatorio visual para revisar o cambiar tus talentos al entrar en los lugares que hayas seleccionado.
 
-Su objetivo principal es recordar al jugador que revise o cambie sus talentos cuando entra en contenido donde necesita una configuración de talentos específica.
+El addon permite elegir de forma independiente **Mundo**, las distintas **expansiones** y la **Temporada actual**.
 
 ### ¿Cómo funciona?
 
-Cada vez que el jugador cambia de mapa o entra en una instancia, Talent Reminder comprueba la `instanceID` actual.
-
-El addon mantiene internamente una lista de `instanceID` configuradas.
-
-- Si la `instanceID` actual está en la lista, Talent Reminder muestra el aviso.
-- Si la `instanceID` no está en la lista, el addon la considera **Mundo**.
-- La opción **Avisar en Mundo** permite decidir si también debe mostrarse el recordatorio en las IDs que no están configuradas.
+Cuando el jugador cambia de zona o entra en una instancia, Talent Reminder comprueba primero si WoW indica que el personaje está realmente en **Mundo**.
 
 Para Talent Reminder:
 
-> **Mundo = cuando WoW indica que el jugador está realmente fuera de una instancia (`instanceType = "none"`).**
+> **Mundo = cuando WoW indica que el jugador está fuera de una instancia (`instanceType = "none"`).**
 
-Cuando el aviso de **Mundo** ya se ha mostrado, cambiar entre otras zonas que también se consideran Mundo **no vuelve a mostrar el recordatorio**. El addon recuerda durante la sesión si el jugador ya estaba en Mundo.
+Por tanto, una `instanceID` que no esté configurada **no se considera Mundo automáticamente**. Si el jugador está dentro de una instancia no configurada, simplemente no se muestra el aviso.
 
-El aviso de Mundo vuelve a estar disponible después de entrar en una instancia configurada.
+Si el jugador no está en Mundo, el addon obtiene la `instanceID` actual y comprueba si pertenece a alguno de los grupos activados.
 
+- **Mundo**: muestra el aviso al entrar en el mundo si está activado.
+- **Expansiones**: cada expansión puede activarse o desactivarse de forma independiente.
+- **Temporada actual**: es un grupo independiente que permite incluir instancias de la rotación actual aunque originalmente pertenezcan a otra expansión.
+- Una misma `instanceID` puede pertenecer a más de un grupo. El aviso se muestra si **al menos uno de esos grupos está activado**.
+- Si la instancia no pertenece a ningún grupo activado, no se muestra el aviso.
 
-Esta clasificación es independiente del tipo de instancia que World of Warcraft asigne a la zona.
+Mientras el jugador permanece en Mundo, cambiar entre zonas de Mundo **no vuelve a mostrar el recordatorio**. Al entrar en una instancia, el estado de Mundo se reinicia para que el aviso pueda volver a mostrarse la próxima vez que se regrese al Mundo.
+
+### Selección de contenido
+
+En las opciones hay un desplegable **Expansiones** con los siguientes grupos:
+
+- Todas
+- Mundo
+- Classic
+- The Burning Crusade
+- Wrath of the Lich King
+- Cataclysm
+- Mists of Pandaria
+- Warlords of Draenor
+- Legion
+- Battle for Azeroth
+- Shadowlands
+- Dragonflight
+- The War Within
+- Midnight
+- Temporada actual
+
+**Todas** activa o desactiva todos los grupos, incluido Mundo y Temporada actual.
+
+Por defecto, todas las expansiones y **Temporada actual** están activadas. **Mundo** está desactivado por defecto.
+
+### Temporada actual
+
+**Temporada actual** no representa una expansión. Es un grupo adicional pensado para las instancias que forman parte de la temporada vigente.
+
+Esto permite, por ejemplo, tener una expansión antigua desactivada y seguir recibiendo el aviso en una de sus mazmorras si esa mazmorra también está incluida en **Temporada actual**.
+
+Las `instanceID` de este grupo se mantienen en `Core/Instances.lua`, igual que las de las expansiones.
 
 ### Recordatorio
 
@@ -34,12 +65,13 @@ El aviso aparece como un texto grande en pantalla y puede personalizarse desde l
 Es posible configurar:
 
 - Texto del recordatorio.
+- Color del texto: Blanco, Rojo, Verde o Naranja.
 - Tamaño de la fuente.
-- Duración del aviso.
-- Duración del efecto de desaparición.
+- Duración total del aviso.
+- Duración del efecto de desaparición (Fade out).
 - Posición del aviso.
 - Sonido del aviso.
-- Avisos en Mundo.
+- Mundo, expansiones y Temporada actual donde debe mostrarse.
 
 La posición del recordatorio puede desbloquearse y moverse directamente por la pantalla.
 
@@ -73,36 +105,79 @@ Los clientes `esES` y `esMX` utilizan español. Los demás idiomas utilizan ingl
 | `/tr move` | Activa o desactiva el modo para mover el recordatorio. |
 | `/tr id` | Muestra información de la instancia actual, incluida su `instanceID`. |
 | `/tr stop` | Detiene y oculta el recordatorio actual. |
-| `/tr instances` | Abre una ventana con todas las mazmorras, bandas y Delves agrupadas por expansión, lista para copiar. El botón **Copiar todo** selecciona todo el texto y solo necesitas pulsar `Ctrl+C`. |
+| `/tr instances` | Abre una ventana con mazmorras, bandas y Delves agrupados por expansión. **Copiar todo** selecciona el texto para copiarlo con `Ctrl+C`. |
+
+### Estructura interna
+
+- `Bootstrap.lua`: crea el espacio compartido del addon y la función de traducción.
+- `Core/Defaults.lua`: contiene la configuración predeterminada.
+- `Core/Expansions.lua`: define los grupos seleccionables y su orden en la interfaz: Mundo, expansiones y Temporada actual.
+- `Core/Instances.lua`: contiene las `instanceID` agrupadas por expansión/Temporada actual y la lógica para comprobar instancias y Mundo.
+- `Core/Sounds.lua`: gestiona los sonidos nativos y el soporte opcional para LibSharedMedia-3.0.
+- `Core/Reminder.lua`: crea y controla el recordatorio visual.
+- `Options/Options.lua`: construye la interfaz de opciones.
+- `Tools/InstanceDump.lua`: contiene la herramienta de diagnóstico utilizada por `/tr instances`.
+- `Locales/`: contiene los textos traducibles del addon.
 
 ---
 
 ## English
 
-**Talent Reminder** is a World of Warcraft addon designed to display a visual reminder whenever the player changes zones or enters specific instances.
+**Talent Reminder** is a World of Warcraft addon that displays a visual reminder to review or change your talents when entering selected locations.
 
-Its main purpose is to remind the player to review or change their talents when entering content that requires a particular talent setup.
+The addon lets you independently select **World**, individual **expansions**, and the **Current Season**.
 
 ### How does it work?
 
-Whenever the player changes maps or enters an instance, Talent Reminder checks the current `instanceID`.
-
-The addon maintains an internal list of configured `instanceID` values.
-
-- If the current `instanceID` is in the list, Talent Reminder displays the reminder.
-- If the `instanceID` is not in the list, the addon considers it **World**.
-- The **Notify in World** option determines whether the reminder should also appear for IDs that are not configured.
+Whenever the player changes zones or enters an instance, Talent Reminder first checks whether WoW reports that the character is actually in the **World**.
 
 For Talent Reminder:
 
-> **World = when WoW reports that the player is actually outside an instance (`instanceType = "none"`).**
+> **World = when WoW reports that the player is outside an instance (`instanceType = "none"`).**
 
-Once the **World** reminder has been shown, moving between other zones that are also considered World **does not show the reminder again**. The addon remembers during the current session whether the player was already in World.
+Therefore, an unconfigured `instanceID` is **not automatically considered World**. If the player is inside an unconfigured instance, the reminder simply does not appear.
 
-The World reminder becomes available again after entering a configured instance.
+When the player is not in the World, the addon obtains the current `instanceID` and checks whether it belongs to any enabled group.
 
+- **World**: displays the reminder when entering the World if enabled.
+- **Expansions**: each expansion can be enabled or disabled independently.
+- **Current Season**: an independent group that can contain instances from the current rotation even when they originally belong to an older expansion.
+- The same `instanceID` can belong to more than one group. The reminder is displayed when **at least one of those groups is enabled**.
+- If the instance does not belong to any enabled group, no reminder is displayed.
 
-This classification is independent of the instance type assigned to the zone by World of Warcraft.
+While the player remains in the World, moving between World zones **does not display the reminder again**. Entering an instance resets the World state so the reminder can appear again the next time the player returns to the World.
+
+### Content selection
+
+The settings contain an **Expansions** dropdown with these groups:
+
+- All
+- World
+- Classic
+- The Burning Crusade
+- Wrath of the Lich King
+- Cataclysm
+- Mists of Pandaria
+- Warlords of Draenor
+- Legion
+- Battle for Azeroth
+- Shadowlands
+- Dragonflight
+- The War Within
+- Midnight
+- Current Season
+
+**All** enables or disables every group, including World and Current Season.
+
+By default, all expansions and **Current Season** are enabled. **World** is disabled by default.
+
+### Current Season
+
+**Current Season** is not an expansion. It is an additional group intended for instances that are part of the active seasonal rotation.
+
+For example, an older expansion can be disabled while a dungeon from that expansion can still trigger the reminder when that dungeon is also included in **Current Season**.
+
+The `instanceID` values for this group are maintained in `Core/Instances.lua`, just like the expansion groups.
 
 ### Reminder
 
@@ -111,12 +186,13 @@ The reminder appears as large text on the screen and can be customized through t
 You can configure:
 
 - Reminder text.
+- Text color: White, Red, Green or Orange.
 - Font size.
-- Display duration.
+- Total display duration.
 - Fade-out duration.
 - Reminder position.
 - Reminder sound.
-- World notifications.
+- World, expansions and Current Season where the reminder should appear.
 
 The reminder position can be unlocked and moved directly around the screen.
 
@@ -150,15 +226,16 @@ Currently included:
 | `/tr move` | Enables or disables reminder positioning mode. |
 | `/tr id` | Displays information about the current instance, including its `instanceID`. |
 | `/tr stop` | Stops and hides the current reminder. |
-| `/tr instances` | Opens a copyable window containing all dungeons, raids and Delves grouped by expansion. The **Copy all** button selects all text, then you only need to press `Ctrl+C`. |
+| `/tr instances` | Opens a window containing dungeons, raids and Delves grouped by expansion. **Copy all** selects the text so it can be copied with `Ctrl+C`. |
 
+### Internal structure
 
-### Estructura interna / Internal structure
-
-`Core/Instances.lua` contiene únicamente la lógica utilizada por Talent Reminder para determinar si una `instanceID` está configurada o se considera Mundo.
-
-`Tools/InstanceDump.lua` contiene la herramienta de diagnóstico utilizada por `/tr instances`, incluyendo el recorrido por expansiones, mazmorras, bandas y Delves.
-
-`Core/Instances.lua` only contains the runtime logic used by Talent Reminder to determine whether an `instanceID` is tracked or considered World.
-
-`Tools/InstanceDump.lua` contains the `/tr instances` diagnostic utility, including expansion, dungeon, raid and Delve enumeration.
+- `Bootstrap.lua`: creates the addon's shared namespace and translation function.
+- `Core/Defaults.lua`: contains the default configuration.
+- `Core/Expansions.lua`: defines the selectable groups and their UI order: World, expansions and Current Season.
+- `Core/Instances.lua`: contains the `instanceID` values grouped by expansion/Current Season and the logic used to check instances and World.
+- `Core/Sounds.lua`: manages native sounds and optional LibSharedMedia-3.0 support.
+- `Core/Reminder.lua`: creates and controls the visual reminder.
+- `Options/Options.lua`: builds the settings interface.
+- `Tools/InstanceDump.lua`: contains the diagnostic utility used by `/tr instances`.
+- `Locales/`: contains the addon's translatable strings.

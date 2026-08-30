@@ -12,6 +12,7 @@ Locales\enUS.lua
 Locales\esES.lua
 
 Core\Defaults.lua
+Core\Expansions.lua
 Core\Instances.lua
 Core\Sounds.lua
 Core\Reminder.lua
