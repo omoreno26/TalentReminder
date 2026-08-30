@@ -24,7 +24,12 @@ local function CheckCurrentInstance()
           maxPlayers, dynamicDifficulty, isDynamic, instanceID = GetInstanceInfo()
 
     if TR.Instances:IsTracked(instanceID) then
-        TR.Reminder:Show()
+        -- PLAYER_ENTERING_WORLD and ZONE_CHANGED_NEW_AREA can both fire during
+        -- the same transition. Only remind when the tracked instance actually
+        -- changes, or when we have just come from World.
+        if lastWasWorld or lastInstanceID ~= instanceID then
+            TR.Reminder:Show()
+        end
 
         lastInstanceID = instanceID
         lastWasWorld = false
@@ -72,6 +77,7 @@ end
 
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 eventFrame:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" and arg1 == addonName then
@@ -85,7 +91,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1)
         return
     end
 
-    if event == "PLAYER_ENTERING_WORLD" then
+    if event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
         C_Timer.After(0.5, CheckCurrentInstance)
     end
 end)
