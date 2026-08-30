@@ -8,6 +8,21 @@ TR.Defaults = {
     fadeTime = 1.0,
     remindInWorld = false,
 
+    expansions = {
+        CLASSIC = true,
+        TBC = true,
+        WOTLK = true,
+        CATACLYSM = true,
+        MOP = true,
+        WOD = true,
+        LEGION = true,
+        BFA = true,
+        SHADOWLANDS = true,
+        DRAGONFLIGHT = true,
+        TWW = true,
+        MIDNIGHT = true,
+    },
+
     soundType = "WOW",
     soundValue = "RAID_WARNING",
 

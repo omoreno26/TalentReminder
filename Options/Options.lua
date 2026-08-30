@@ -9,6 +9,8 @@ local settingsCategory
 local messageEditBox
 local colorDropdown
 local colorMenuFrame
+local expansionDropdown
+local expansionMenuFrame
 
 local function MakeLabel(parent, labelText, x, y)
     local label = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -262,6 +264,104 @@ local function BuildColorMenu()
     end
 end
 
+local expansionEntries = {
+    { key = "CLASSIC", label = "Classic" },
+    { key = "TBC", label = "The Burning Crusade" },
+    { key = "WOTLK", label = "Wrath of the Lich King" },
+    { key = "CATACLYSM", label = "Cataclysm" },
+    { key = "MOP", label = "Mists of Pandaria" },
+    { key = "WOD", label = "Warlords of Draenor" },
+    { key = "LEGION", label = "Legion" },
+    { key = "BFA", label = "Battle for Azeroth" },
+    { key = "SHADOWLANDS", label = "Shadowlands" },
+    { key = "DRAGONFLIGHT", label = "Dragonflight" },
+    { key = "TWW", label = "The War Within" },
+    { key = "MIDNIGHT", label = "Midnight" },
+}
+
+local function RefreshExpansionDropdownText()
+    if not expansionDropdown or not expansionDropdown.text then
+        return
+    end
+
+    local selected = 0
+    for _, entry in ipairs(expansionEntries) do
+        if TalentReminderDB.expansions[entry.key] ~= false then
+            selected = selected + 1
+        end
+    end
+
+    if selected == #expansionEntries then
+        expansionDropdown.text:SetText(TR:T("allExpansions"))
+    else
+        expansionDropdown.text:SetText(string.format(TR:T("selectedExpansions"), selected))
+    end
+end
+
+local function BuildExpansionMenu()
+    if expansionMenuFrame then
+        expansionMenuFrame:Hide()
+        expansionMenuFrame:SetParent(nil)
+    end
+
+    expansionMenuFrame = CreateFrame("Frame", nil, panel, "BackdropTemplate")
+    expansionMenuFrame:SetFrameStrata("TOOLTIP")
+    expansionMenuFrame:SetPoint("TOPLEFT", expansionDropdown, "BOTTOMLEFT", 0, -2)
+    expansionMenuFrame:SetSize(260, 330)
+    expansionMenuFrame:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 16,
+        edgeSize = 16,
+        insets = { left = 4, right = 4, top = 4, bottom = 4 },
+    })
+
+    local all = CreateFrame("CheckButton", nil, expansionMenuFrame, "UICheckButtonTemplate")
+    all:SetPoint("TOPLEFT", 8, -8)
+    local allLabel = all:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    allLabel:SetPoint("LEFT", all, "RIGHT", 4, 0)
+    allLabel:SetText(TR:T("allExpansions"))
+
+    local function RefreshAllCheck()
+        for _, entry in ipairs(expansionEntries) do
+            if TalentReminderDB.expansions[entry.key] == false then
+                all:SetChecked(false)
+                return
+            end
+        end
+        all:SetChecked(true)
+    end
+
+    all:SetScript("OnClick", function(self)
+        local enabled = self:GetChecked() and true or false
+        for _, entry in ipairs(expansionEntries) do
+            TalentReminderDB.expansions[entry.key] = enabled
+        end
+        BuildExpansionMenu()
+        RefreshExpansionDropdownText()
+    end)
+
+    for index, entry in ipairs(expansionEntries) do
+        local checkbox = CreateFrame("CheckButton", nil, expansionMenuFrame, "UICheckButtonTemplate")
+        checkbox:SetPoint("TOPLEFT", 8, -8 - (index * 24))
+        checkbox:SetChecked(TalentReminderDB.expansions[entry.key] ~= false)
+
+        local label = checkbox:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        label:SetPoint("LEFT", checkbox, "RIGHT", 4, 0)
+        label:SetText(entry.label)
+
+        checkbox:SetScript("OnClick", function(self)
+            TalentReminderDB.expansions[entry.key] = self:GetChecked() and true or false
+            RefreshAllCheck()
+            RefreshExpansionDropdownText()
+        end)
+    end
+
+    RefreshAllCheck()
+    expansionMenuFrame:Show()
+end
+
 function TR.Options:Open()
     if settingsCategory then
         Settings.OpenToCategory(settingsCategory.ID or panel.name)
@@ -271,6 +371,7 @@ function TR.Options:Open()
         C_Timer.After(0, function()
             TR.Options:RefreshMessage()
             RefreshSoundDropdownText()
+            RefreshExpansionDropdownText()
         end)
     end
 end
@@ -288,7 +389,7 @@ function TR.Options:Initialize()
     scrollFrame:EnableMouseWheel(true)
 
     local content = CreateFrame("Frame", nil, scrollFrame)
-    content:SetSize(650, 760)
+    content:SetSize(650, 840)
     scrollFrame:SetScrollChild(content)
 
     scrollFrame:SetScript("OnMouseWheel", function(self, delta)
@@ -405,6 +506,7 @@ function TR.Options:Initialize()
         TR.Options:RefreshMessage()
         RefreshMessageDisplay()
         RefreshSoundDropdownText()
+        RefreshExpansionDropdownText()
     end)
 
     messageEditBox:HookScript("OnShow", function()
@@ -475,10 +577,36 @@ function TR.Options:Initialize()
         function(v) TalentReminderDB.remindInWorld = v end
     )
 
-    MakeLabel(content, TR:T("sound"), 24, -511)
+    MakeLabel(content, TR:T("expansions"), 24, -511)
+
+    expansionDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    expansionDropdown:SetPoint("TOPLEFT", 24, -534)
+    expansionDropdown:SetSize(260, 30)
+
+    expansionDropdown.text = expansionDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    expansionDropdown.text:SetPoint("LEFT", 12, 0)
+    expansionDropdown.text:SetPoint("RIGHT", -28, 0)
+    expansionDropdown.text:SetJustifyH("LEFT")
+
+    local expansionArrow = expansionDropdown:CreateTexture(nil, "OVERLAY")
+    expansionArrow:SetTexture("Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up")
+    expansionArrow:SetSize(20, 20)
+    expansionArrow:SetPoint("RIGHT", expansionDropdown, "RIGHT", -6, 0)
+
+    expansionDropdown:SetScript("OnClick", function()
+        if expansionMenuFrame and expansionMenuFrame:IsShown() then
+            expansionMenuFrame:Hide()
+        else
+            BuildExpansionMenu()
+        end
+    end)
+
+    RefreshExpansionDropdownText()
+
+    MakeLabel(content, TR:T("sound"), 24, -586)
 
     soundDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-    soundDropdown:SetPoint("TOPLEFT", 24, -534)
+    soundDropdown:SetPoint("TOPLEFT", 24, -609)
     soundDropdown:SetSize(330, 30)
 
     soundDropdown.text = soundDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -516,7 +644,7 @@ function TR.Options:Initialize()
     lsmStatus:SetText(TR.Sound:GetLSM() and TR:T("lsmFound") or TR:T("lsmMissing"))
 
     local moveButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-    moveButton:SetPoint("TOPLEFT", 24, -611)
+    moveButton:SetPoint("TOPLEFT", 24, -686)
     moveButton:SetSize(155, 30)
     moveButton:SetText(TR:T("move"))
 
@@ -554,7 +682,7 @@ function TR.Options:Initialize()
     end)
 
     local info = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", 24, -666)
+    info:SetPoint("TOPLEFT", 24, -741)
     info:SetWidth(560)
     info:SetJustifyH("LEFT")
     info:SetText(TR:T("info"))

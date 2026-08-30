@@ -31,3 +31,7 @@ L["color1"] = "Blanco"
 L["color2"] = "Rojo"
 L["color3"] = "Verde"
 L["color4"] = "Naranja"
+
+L["expansions"] = "Expansiones"
+L["allExpansions"] = "Todas"
+L["selectedExpansions"] = "%d seleccionadas"
