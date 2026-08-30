@@ -257,12 +257,34 @@ TR.Instances.ByExpansion = {
         [2987] = true, -- La Gruta Mareal
         [3004] = true, -- Abismo Venenoso
         [2933] = true, --- Calamidad de Colegiado
+        [2953] = true, -- Plaza del Parhelio
+        [2962] = true, -- Atal'Aman
+        [2952] = true, -- Enclave Sombrío
+        [2961] = true, -- Criptas Crepusculares
+        [2963] = true, -- Foso de los Agravios
+        [2964] = true, -- Abismo del Recuerdo
+        [2963] = true, -- Foso de los Agravios
+        [2965] = true, -- Sagrario Matasoles
+        [2979] = true, -- Punto de la Guarida de las Sombras
+        [2966] = true, -- Altar del Tormento        
+        [3077] = true, -- Circulo de la Gloria
+        [3038] = true, -- Isla Gnaldor
+        [3079] = true, -- Cascadas Lluevenono
     },
 
     -- Temporada actual / Current Season
     -- Este grupo es independiente de la expansión original de la instancia.
     CURRENT_SEASON = {
-        [2805] = true, -- Aguja Brisaveloz
+        [2993] = true, -- Altar de los Colmillos
+        [2825] = true, -- Guarida de Nalorakk
+        [2813] = true, -- Frontal de la Muerte
+        [2859] = true, -- El Valle Cegador
+        [2923] = true, -- Arena Lacravacua
+        [1762] = true, -- Reposo de los Reyes
+        [2521] = true, -- Estanques de Vida Rubí
+        [1877] = true, -- Templo de Sethraliss
+        [2987] = true, -- La Gruta Mareal
+        [3004] = true, -- Abismo Venenoso 
     },
 
 }
