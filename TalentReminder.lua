@@ -41,14 +41,23 @@ local function CheckCurrentInstance()
     lastWasWorld = false
 end
 
-local function PrintCurrentInstance()
+local function BuildCurrentInstanceText()
     local instanceName, instanceType, difficultyID, difficultyName,
           maxPlayers, dynamicDifficulty, isDynamic, instanceID = GetInstanceInfo()
 
-    print("|cffffcc00Talent Reminder|r")
-    print(TR:T("instance") .. ": " .. tostring(instanceName))
-    print("instanceID: " .. tostring(instanceID))
-    print("[" .. tostring(instanceID) .. "] = true, -- " .. tostring(instanceName))
+    return table.concat({
+        TR:T("instance") .. ": " .. tostring(instanceName),
+        "instanceID: " .. tostring(instanceID),
+        "[" .. tostring(instanceID) .. "] = true, -- " .. tostring(instanceName),
+    }, "\n")
+end
+
+local function ShowCurrentInstance()
+    TR.CopyWindow:Show(
+        "Talent Reminder - InstanceID",
+        BuildCurrentInstanceText(),
+        BuildCurrentInstanceText
+    )
 end
 
 SLASH_TALENTREMINDER1 = "/tr"
@@ -66,7 +75,7 @@ SlashCmdList["TALENTREMINDER"] = function(msg)
         print("|cffffcc00Talent Reminder:|r " ..
             (TR.Reminder:IsMoveMode() and TR:T("moveOn") or TR:T("moveOff")))
     elseif msg == "id" then
-        PrintCurrentInstance()
+        ShowCurrentInstance()
     elseif msg == "stop" then
         TR.Reminder:SetMoveMode(false)
         TR.Reminder:Stop()

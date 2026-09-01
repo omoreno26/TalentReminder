@@ -237,6 +237,23 @@ TR.Instances.ByExpansion = {
         [2657] = true, -- Palacio Nerub'ar
         [2769] = true, -- Liberación de Minahonda
         [2810] = true, -- Forja de Maná Omega
+        [2680] = true, -- Minas Reptaterra
+        [2664] = true, -- Capricho Fúngico
+        [2681] = true, -- Reposo de Kriegval
+        [2684] = true, -- Foso del Pavor
+        [2683] = true, -- Estación de Bombeo
+        [2679] = true, -- Caverna del Micomante
+        [2687] = true, -- Sumidero
+        [2686] = true, -- Sagrario del Ocaso
+        [2688] = true, -- Espiral Serpenteante
+        [2689] = true, -- Abismo de Tak-Rethan
+        [2690] = true, -- El Infrastillo
+        [2682] = true, -- Guarida de Zekvir
+        [2815] = true, -- Excavación 9
+        [2826] = true, -- Canal Callejero
+        [2831] = true, -- Cúpula de Demolición
+        [2803] = true, -- Asalto Archivístico
+        [2951] = true, -- Santuario Filovacío
     },
 
     -- Midnight

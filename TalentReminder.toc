@@ -2,7 +2,7 @@
 ## Title: Talent Reminder
 ## Notes: Shows a configurable talent reminder when entering selected instances.
 ## Author: Nazgul
-## Version: 1.0.1
+## Version: 1.0.2
 ## SavedVariables: TalentReminderDB
 
 Bootstrap.lua
@@ -17,6 +17,7 @@ Core\Instances.lua
 Core\Sounds.lua
 Core\Reminder.lua
 
+Tools\CopyWindow.lua
 Tools\InstanceDump.lua
 
 Options\Options.lua

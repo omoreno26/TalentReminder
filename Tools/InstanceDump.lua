@@ -50,10 +50,6 @@ local function FindExpansionTier(value)
     end
 end
 
-local dumpWindow
-local dumpEditBox
-local dumpTitle
-
 local function AddLine(lines, text)
     lines[#lines + 1] = text or ""
 end
@@ -238,8 +234,6 @@ local function BuildDumpText()
     local maxTier = EJ_GetNumTiers and EJ_GetNumTiers() or #EXPANSIONS
     local delveRoots = FindExpansionRootMaps()
 
-    AddLine(lines, "-- Talent Reminder - InstanceID dump")
-    AddLine(lines, "-- Generated from WoW APIs")
     AddLine(lines)
 
     for tier = 1, math.min(maxTier, #EXPANSIONS) do
@@ -268,93 +262,10 @@ local function BuildDumpText()
     return table.concat(lines, "\n")
 end
 
-local function CreateDumpWindow()
-    if dumpWindow then
-        return
-    end
-
-    dumpWindow = CreateFrame("Frame", "TalentReminderInstanceDumpFrame", UIParent, "BackdropTemplate")
-    dumpWindow:SetSize(760, 620)
-    dumpWindow:SetPoint("CENTER")
-    dumpWindow:SetFrameStrata("DIALOG")
-    dumpWindow:SetMovable(true)
-    dumpWindow:SetClampedToScreen(true)
-    dumpWindow:EnableMouse(true)
-    dumpWindow:RegisterForDrag("LeftButton")
-
-    dumpWindow:SetBackdrop({
-        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-        tile = true,
-        tileSize = 32,
-        edgeSize = 32,
-        insets = { left = 10, right = 10, top = 10, bottom = 10 },
-    })
-
-    dumpWindow:SetScript("OnDragStart", dumpWindow.StartMoving)
-    dumpWindow:SetScript("OnDragStop", dumpWindow.StopMovingOrSizing)
-
-    dumpTitle = dumpWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    dumpTitle:SetPoint("TOPLEFT", 20, -18)
-    dumpTitle:SetText("Talent Reminder - InstanceIDs")
-
-    local help = dumpWindow:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    help:SetPoint("TOPLEFT", dumpTitle, "BOTTOMLEFT", 0, -6)
-    help:SetText("Pulsa \"Copiar todo\" y después Ctrl+C")
-
-    local close = CreateFrame("Button", nil, dumpWindow, "UIPanelCloseButton")
-    close:SetPoint("TOPRIGHT", -4, -4)
-
-    local scroll = CreateFrame("ScrollFrame", nil, dumpWindow, "UIPanelScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", 20, -62)
-    scroll:SetPoint("BOTTOMRIGHT", -38, 50)
-
-    dumpEditBox = CreateFrame("EditBox", nil, scroll)
-    dumpEditBox:SetMultiLine(true)
-    dumpEditBox:SetAutoFocus(false)
-    dumpEditBox:SetFontObject(ChatFontNormal)
-    dumpEditBox:SetWidth(680)
-    dumpEditBox:SetTextInsets(4, 4, 4, 4)
-    dumpEditBox:EnableMouse(true)
-
-    scroll:SetScrollChild(dumpEditBox)
-
-    dumpEditBox:SetScript("OnEscapePressed", function()
-        dumpEditBox:ClearFocus()
-        dumpWindow:Hide()
-    end)
-
-    dumpEditBox:SetScript("OnTextChanged", function(self)
-        local height = math.max(1, self:GetStringHeight() + 20)
-        self:SetHeight(height)
-    end)
-
-    local selectAll = CreateFrame("Button", nil, dumpWindow, "UIPanelButtonTemplate")
-    selectAll:SetSize(140, 26)
-    selectAll:SetPoint("BOTTOMLEFT", 20, 16)
-    selectAll:SetText("Copiar todo")
-    selectAll:SetScript("OnClick", function()
-        dumpEditBox:SetFocus()
-        dumpEditBox:HighlightText()
-    end)
-
-    local refresh = CreateFrame("Button", nil, dumpWindow, "UIPanelButtonTemplate")
-    refresh:SetSize(120, 26)
-    refresh:SetPoint("LEFT", selectAll, "RIGHT", 10, 0)
-    refresh:SetText("Actualizar")
-    refresh:SetScript("OnClick", function()
-        dumpEditBox:SetText(BuildDumpText())
-        dumpEditBox:SetCursorPosition(0)
-    end)
-
-    dumpWindow:Hide()
-end
-
 function TR.InstanceDump:Show()
-    CreateDumpWindow()
-
-    dumpEditBox:SetText(BuildDumpText())
-    dumpEditBox:SetCursorPosition(0)
-    dumpWindow:Show()
-    dumpWindow:Raise()
+    TR.CopyWindow:Show(
+        "Talent Reminder - InstanceIDs",
+        BuildDumpText(),
+        BuildDumpText
+    )
 end

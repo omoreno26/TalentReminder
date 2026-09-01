@@ -103,7 +103,7 @@ Los clientes `esES` y `esMX` utilizan español. Los demás idiomas utilizan ingl
 | `/tr` | Abre las opciones de Talent Reminder. |
 | `/tr test` | Muestra un recordatorio de prueba con la configuración actual. |
 | `/tr move` | Activa o desactiva el modo para mover el recordatorio. |
-| `/tr id` | Muestra el nombre y `instanceID` de la instancia actual, además de una línea lista para copiar en `Instances.lua`: `[instanceID] = true, -- Nombre de instancia`. |
+| `/tr id` | Abre una ventana copiable con el nombre y `instanceID` de la instancia actual, además de una línea lista para pegar en `Instances.lua`: `[instanceID] = true, -- Nombre de instancia`. |
 | `/tr stop` | Detiene y oculta el recordatorio actual. |
 | `/tr instances` | Abre una ventana con mazmorras, bandas y Delves agrupados por expansión. **Copiar todo** selecciona el texto para copiarlo con `Ctrl+C`. |
 
@@ -224,7 +224,7 @@ Currently included:
 | `/tr` | Opens the Talent Reminder settings. |
 | `/tr test` | Displays a test reminder using the current configuration. |
 | `/tr move` | Enables or disables reminder positioning mode. |
-| `/tr id` | Displays the current instance name and `instanceID`, plus a line ready to copy into `Instances.lua`: `[instanceID] = true, -- Instance name`. |
+| `/tr id` | Opens a copyable window with the current instance name and `instanceID`, plus a line ready to paste into `Instances.lua`: `[instanceID] = true, -- Instance name`. |
 | `/tr stop` | Stops and hides the current reminder. |
 | `/tr instances` | Opens a window containing dungeons, raids and Delves grouped by expansion. **Copy all** selects the text so it can be copied with `Ctrl+C`. |
 
