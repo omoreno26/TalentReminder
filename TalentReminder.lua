@@ -48,7 +48,7 @@ local function PrintCurrentInstance()
     print("|cffffcc00Talent Reminder|r")
     print(TR:T("instance") .. ": " .. tostring(instanceName))
     print("instanceID: " .. tostring(instanceID))
-    print("difficultyID: " .. tostring(difficultyID))
+    print("[" .. tostring(instanceID) .. "] = true, -- " .. tostring(instanceName))
 end
 
 SLASH_TALENTREMINDER1 = "/tr"

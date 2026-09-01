@@ -407,6 +407,10 @@ function TR.Options:Initialize()
     subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
     subtitle:SetText(TR:T("subtitle"))
 
+    local author = panel:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
+    author:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -24, -24)
+    author:SetText("Created by Nazgul")
+
     MakeLabel(panel, TR:T("messageLabel"), 24, -98)
 
     messageEditBox = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
