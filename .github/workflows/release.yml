@@ -1,9 +1,7 @@
 name: Build & Release Talent Reminder
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,29 +13,27 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Read addon version
         id: version
         shell: bash
         run: |
           VERSION=$(grep -E '^## Version:' TalentReminder.toc | sed 's/^## Version:[[:space:]]*//')
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Talent Reminder version: $VERSION"
 
-      - name: Validate tag version
-        shell: bash
-        run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          TOC_VERSION="${{ steps.version.outputs.version }}"
-
-          if [ "$TAG_VERSION" != "$TOC_VERSION" ]; then
-            echo "ERROR: Tag v$TAG_VERSION does not match TOC version $TOC_VERSION"
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Could not read version from TalentReminder.toc"
             exit 1
           fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Building TalentReminder-$VERSION"
 
       - name: Create addon package
         shell: bash
         run: |
+          rm -rf package
           mkdir -p package/TalentReminder
 
           cp -r Core package/TalentReminder/
@@ -56,10 +52,32 @@ jobs:
           cd package
           zip -r "../TalentReminder-${{ steps.version.outputs.version }}.zip" TalentReminder
 
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TalentReminder-${{ steps.version.outputs.version }}
+          path: TalentReminder-${{ steps.version.outputs.version }}.zip
+          if-no-files-found: error
+
+      - name: Create tag if it does not exist
+        shell: bash
+        run: |
+          TAG="${{ steps.version.outputs.version }}"
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.version }}
           name: Talent Reminder ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref_name }}
           files: TalentReminder-${{ steps.version.outputs.version }}.zip
           generate_release_notes: true
+          fail_on_unmatched_files: true
