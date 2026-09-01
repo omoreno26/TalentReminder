@@ -2,8 +2,10 @@
 ## Title: Talent Reminder
 ## Notes: Shows a configurable talent reminder when entering selected instances.
 ## Author: Nazgul
-## Version: 1.0.2
+## Version: 1.0.3
 ## SavedVariables: TalentReminderDB
+## Category-enUS: Combat
+## Category-esES: Combate
 
 Bootstrap.lua
 
