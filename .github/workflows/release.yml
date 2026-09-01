@@ -1,0 +1,65 @@
+name: Build & Release Talent Reminder
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read addon version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(grep -E '^## Version:' TalentReminder.toc | sed 's/^## Version:[[:space:]]*//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Talent Reminder version: $VERSION"
+
+      - name: Validate tag version
+        shell: bash
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          TOC_VERSION="${{ steps.version.outputs.version }}"
+
+          if [ "$TAG_VERSION" != "$TOC_VERSION" ]; then
+            echo "ERROR: Tag v$TAG_VERSION does not match TOC version $TOC_VERSION"
+            exit 1
+          fi
+
+      - name: Create addon package
+        shell: bash
+        run: |
+          mkdir -p package/TalentReminder
+
+          cp -r Core package/TalentReminder/
+          cp -r Locales package/TalentReminder/
+          cp -r Options package/TalentReminder/
+          cp -r Tools package/TalentReminder/
+
+          cp Bootstrap.lua package/TalentReminder/
+          cp TalentReminder.lua package/TalentReminder/
+          cp TalentReminder.toc package/TalentReminder/
+          cp README.md package/TalentReminder/
+
+      - name: Create ZIP
+        shell: bash
+        run: |
+          cd package
+          zip -r "../TalentReminder-${{ steps.version.outputs.version }}.zip" TalentReminder
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Talent Reminder ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref_name }}
+          files: TalentReminder-${{ steps.version.outputs.version }}.zip
+          generate_release_notes: true
