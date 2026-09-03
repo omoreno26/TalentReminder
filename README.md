@@ -93,8 +93,15 @@ Actualmente incluye:
 
 - Español
 - English
+- Deutsch
+- Français
+- Italiano
+- Português
+- Русский
 
-Los clientes `esES` y `esMX` utilizan español. Los demás idiomas utilizan inglés como idioma predeterminado.
+Los clientes `esES` y `esMX` utilizan español, `deDE` alemán, `frFR` francés, `itIT` italiano, `ptBR` portugués y `ruRU` ruso. Los demás idiomas utilizan inglés como idioma predeterminado.
+
+El inglés se carga siempre como idioma base. Si falta alguna clave en una traducción, Talent Reminder muestra automáticamente el texto en inglés para esa clave.
 
 ### Comandos
 
@@ -214,8 +221,15 @@ Currently included:
 
 - Español
 - English
+- Deutsch
+- Français
+- Italiano
+- Português
+- Русский
 
-`esES` and `esMX` clients use Spanish. All other client locales use English as the default language.
+`esES` and `esMX` clients use Spanish, `deDE` German, `frFR` French, `itIT` Italian, `ptBR` Portuguese and `ruRU` Russian. All other client locales use English as the default language.
+
+English is always loaded as the base language. If a translation is missing a key, Talent Reminder automatically displays the English text for that key.
 
 ### Commands
 

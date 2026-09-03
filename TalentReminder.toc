@@ -2,16 +2,26 @@
 ## Title: Talent Reminder
 ## Notes: Shows a configurable talent reminder when entering selected instances.
 ## Author: Nazgul
-## Version: 1.0.3
+## Version: 1.0.4
 ## SavedVariables: TalentReminderDB
 ## Category-enUS: Combat
 ## Category-esES: Combate
+## Category-deDE: Kampf
+## Category-frFR: Combat
+## Category-itIT: Combattimento
+## Category-ptBR: Combate
+## Category-ruRU: Бой
 
 Bootstrap.lua
 
 Locales\Locale.lua
 Locales\enUS.lua
 Locales\esES.lua
+Locales\deDE.lua
+Locales\frFR.lua
+Locales\itIT.lua
+Locales\ptBR.lua
+Locales\ruRU.lua
 
 Core\Defaults.lua
 Core\Expansions.lua

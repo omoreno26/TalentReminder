@@ -1,7 +1,3 @@
-if TalentReminderLocaleCode ~= "en" then
-    return
-end
-
 local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
