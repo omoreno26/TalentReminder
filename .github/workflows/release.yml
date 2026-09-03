@@ -40,6 +40,7 @@ jobs:
           cp -r Locales package/TalentReminder/
           cp -r Options package/TalentReminder/
           cp -r Tools package/TalentReminder/
+          cp -r Media package/TalentReminder/
 
           cp Bootstrap.lua package/TalentReminder/
           cp TalentReminder.lua package/TalentReminder/
