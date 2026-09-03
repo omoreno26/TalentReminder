@@ -2,6 +2,7 @@
 ## Title: Talent Reminder
 ## Notes: Shows a configurable talent reminder when entering selected instances.
 ## Author: Nazgul
+## IconTexture: Interface\Addons\TalentReminder\Media\icon
 ## Version: 1.0.4
 ## SavedVariables: TalentReminderDB
 ## Category-enUS: Combat
