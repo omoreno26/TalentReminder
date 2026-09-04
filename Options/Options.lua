@@ -382,17 +382,18 @@ local function BuildExpansionMenu()
 end
 
 function TR.Options:Open()
-    if settingsCategory then
-        Settings.OpenToCategory(settingsCategory.ID or panel.name)
-
-        -- Settings can show the canvas on the next frame, so refresh again
-        -- after opening to guarantee the SavedVariables value is visible.
-        C_Timer.After(0, function()
-            TR.Options:RefreshMessage()
-            RefreshSoundDropdownText()
-            RefreshExpansionDropdownText()
-        end)
+    if not settingsCategory then
+        return
     end
+
+    Settings.OpenToCategory(settingsCategory:GetID())
+
+    -- Refresh controls after the Settings panel opens.
+    C_Timer.After(0, function()
+        TR.Options:RefreshMessage()
+        RefreshSoundDropdownText()
+        RefreshExpansionDropdownText()
+    end)
 end
 
 function TR.Options:Initialize()
@@ -410,6 +411,11 @@ function TR.Options:Initialize()
     local author = panel:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
     author:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -24, -24)
     author:SetText("Created by Nazgul")
+
+    local version = C_AddOns.GetAddOnMetadata("TalentReminder", "Version") or "?"
+    local versionText = panel:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
+    versionText:SetPoint("TOPRIGHT", author, "BOTTOMRIGHT", 0, -4)
+    versionText:SetText(TR:T("version") .. " " .. version)
 
     MakeLabel(panel, TR:T("messageLabel"), 24, -98)
 
@@ -697,6 +703,5 @@ function TR.Options:Initialize()
     end)
 
     settingsCategory = Settings.RegisterCanvasLayoutCategory(panel, panel.name)
-    settingsCategory.ID = panel.name
     Settings.RegisterAddOnCategory(settingsCategory)
 end

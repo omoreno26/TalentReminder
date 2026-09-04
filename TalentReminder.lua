@@ -66,7 +66,9 @@ SLASH_TALENTREMINDER2 = "/talentreminder"
 SlashCmdList["TALENTREMINDER"] = function(msg)
     msg = (msg or ""):lower():match("^%s*(.-)%s*$")
 
-    if msg == "test" then
+    if msg == "settings" then
+        TR.Options:Open()
+    elseif msg == "test" then
         TR.Reminder:Show()
     elseif msg == "instances" then
         TR.InstanceDump:Show()
@@ -79,8 +81,8 @@ SlashCmdList["TALENTREMINDER"] = function(msg)
     elseif msg == "stop" then
         TR.Reminder:SetMoveMode(false)
         TR.Reminder:Stop()
-    else
-        TR.Options:Open()
+    elseif msg == "" then
+        return
     end
 end
 

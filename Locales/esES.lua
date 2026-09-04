@@ -5,6 +5,7 @@ end
 local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
+L["version"] = "Versión"
 L["subtitle"] = "Configura cómo aparece el recordatorio al entrar en una instancia marcada."
 L["messageLabel"] = "Texto del aviso"
 L["fontSize"] = "Tamaño de fuente"
@@ -17,7 +18,7 @@ L["lock"] = "Bloquear posición"
 L["test"] = "Probar aviso"
 L["center"] = "Centrar posición"
 L["moveHint"] = "Arrastra para mover"
-L["info"] = "Las instanceID se configuran dentro de TalentReminder.lua y no se muestran aquí.\nComandos: /tr, /tr test, /tr move, /tr id, /tr instances"
+L["info"] = "Las instanceID se configuran dentro de TalentReminder.lua y no se muestran aquí.\nComandos: /tr settings, /tr test, /tr move, /tr id, /tr instances"
 L["moveOn"] = "modo mover activado."
 L["moveOff"] = "modo mover desactivado."
 L["instance"] = "Instancia"

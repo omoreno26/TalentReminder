@@ -5,6 +5,7 @@ end
 local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
+L["version"] = "Versione"
 L["subtitle"] = "Configura come appare il promemoria quando entri in un'istanza selezionata."
 L["messageLabel"] = "Testo del promemoria"
 L["fontSize"] = "Dimensione carattere"
@@ -17,7 +18,7 @@ L["lock"] = "Blocca posizione"
 L["test"] = "Prova promemoria"
 L["center"] = "Centra posizione"
 L["moveHint"] = "Trascina per spostare"
-L["info"] = "Gli instanceID sono configurati in TalentReminder.lua e non vengono mostrati qui.\nComandi: /tr, /tr test, /tr move, /tr id, /tr instances"
+L["info"] = "Gli instanceID sono configurati in TalentReminder.lua e non vengono mostrati qui.\nComandi: /tr settings, /tr test, /tr move, /tr id, /tr instances"
 L["moveOn"] = "modalità spostamento attivata."
 L["moveOff"] = "modalità spostamento disattivata."
 L["instance"] = "Istanza"

@@ -107,7 +107,7 @@ El inglés se carga siempre como idioma base. Si falta alguna clave en una tradu
 
 | Comando | Función |
 |---|---|
-| `/tr` | Abre las opciones de Talent Reminder. |
+| `/tr settings` | Abre las opciones de Talent Reminder. |
 | `/tr test` | Muestra un recordatorio de prueba con la configuración actual. |
 | `/tr move` | Activa o desactiva el modo para mover el recordatorio. |
 | `/tr id` | Abre una ventana copiable con el nombre y `instanceID` de la instancia actual, además de una línea lista para pegar en `Instances.lua`: `[instanceID] = true, -- Nombre de instancia`. |
@@ -235,7 +235,7 @@ English is always loaded as the base language. If a translation is missing a key
 
 | Command | Function |
 |---|---|
-| `/tr` | Opens the Talent Reminder settings. |
+| `/tr settings` | Opens the Talent Reminder settings. |
 | `/tr test` | Displays a test reminder using the current configuration. |
 | `/tr move` | Enables or disables reminder positioning mode. |
 | `/tr id` | Opens a copyable window with the current instance name and `instanceID`, plus a line ready to paste into `Instances.lua`: `[instanceID] = true, -- Instance name`. |

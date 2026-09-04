@@ -5,6 +5,7 @@ end
 local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
+L["version"] = "Версия"
 L["subtitle"] = "Настройте отображение напоминания при входе в выбранное подземелье или рейд."
 L["messageLabel"] = "Текст напоминания"
 L["fontSize"] = "Размер шрифта"
@@ -17,7 +18,7 @@ L["lock"] = "Закрепить позицию"
 L["test"] = "Проверить напоминание"
 L["center"] = "По центру"
 L["moveHint"] = "Перетащите для перемещения"
-L["info"] = "instanceID настраиваются в TalentReminder.lua и здесь не отображаются.\nКоманды: /tr, /tr test, /tr move, /tr id, /tr instances"
+L["info"] = "instanceID настраиваются в TalentReminder.lua и здесь не отображаются.\nКоманды: /tr settings, /tr test, /tr move, /tr id, /tr instances"
 L["moveOn"] = "режим перемещения включен."
 L["moveOff"] = "режим перемещения выключен."
 L["instance"] = "Инстанс"
