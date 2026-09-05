@@ -73,8 +73,15 @@ local function CreateWindow()
         window:Hide()
     end)
 
+    local measureText = window:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    measureText:SetWidth(672)
+    measureText:SetJustifyH("LEFT")
+    measureText:SetJustifyV("TOP")
+    measureText:Hide()
+
     editBox:SetScript("OnTextChanged", function(self)
-        local height = math.max(1, self:GetStringHeight() + 20)
+        measureText:SetText(self:GetText() or "")
+        local height = math.max(1, measureText:GetStringHeight() + 20)
         self:SetHeight(height)
     end)
 
