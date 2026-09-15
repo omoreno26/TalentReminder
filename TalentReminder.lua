@@ -89,6 +89,7 @@ end
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+eventFrame:RegisterEvent("READY_CHECK")
 
 eventFrame:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" and arg1 == addonName then
@@ -104,5 +105,14 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1)
 
     if event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
         C_Timer.After(0.5, CheckCurrentInstance)
+        return
+    end
+
+    if event == "READY_CHECK" and TalentReminderDB.remindOnReadyCheck then
+        local inInstance, instanceType = IsInInstance()
+
+        if inInstance and (instanceType == "party" or instanceType == "raid") then
+            TR.Reminder:Show()
+        end
     end
 end)

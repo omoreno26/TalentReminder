@@ -7,6 +7,7 @@ TR.Defaults = {
     duration = 5.0,
     fadeTime = 1.0,
     remindInWorld = false,
+    remindOnReadyCheck = false,
 
     expansions = {
         CLASSIC = true,

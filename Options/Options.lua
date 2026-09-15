@@ -650,6 +650,11 @@ function TR.Options:Initialize()
 
     RefreshSoundDropdownText()
 
+    MakeCheckbox(panel, TR:T("readyCheckReminder"), 24, -405,
+        function() return TalentReminderDB.remindOnReadyCheck end,
+        function(v) TalentReminderDB.remindOnReadyCheck = v end
+    )
+
     local moveButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
     moveButton:SetPoint("TOPLEFT", 24, -467)
     moveButton:SetSize(155, 30)
