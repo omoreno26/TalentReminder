@@ -18,6 +18,7 @@
 ## Category-itIT: Combattimento
 ## Category-ptBR: Combate
 ## Category-ruRU: Бой
+## X-Curse-Project-ID: 1674496
 
 Bootstrap.lua
 
