@@ -2,9 +2,9 @@
 
 ## Español
 
-**Talent Reminder** es un addon para World of Warcraft que muestra un recordatorio visual para revisar o cambiar tus talentos al entrar en los lugares que hayas seleccionado.
+**Talent Reminder** es un addon para World of Warcraft que ayuda a gestionar tus talentos mediante recordatorios configurables y accesos rápidos para cambiar de especialización.
 
-El addon permite elegir de forma independiente **Mundo**, las distintas **expansiones** y la **Temporada actual**.
+El addon permite elegir de forma independiente **Mundo**, las distintas **expansiones** y la **Temporada actual**, además de mostrar recordatorios durante un Ready Check y añadir botones para cambiar rápidamente de especialización desde la ventana de talentos.
 
 ### ¿Cómo funciona?
 
@@ -72,8 +72,39 @@ Es posible configurar:
 - Posición del aviso.
 - Sonido del aviso.
 - Mundo, expansiones y Temporada actual donde debe mostrarse.
+- Mostrar el aviso al realizar un **Ready Check** dentro de una mazmorra o banda.
 
 La posición del recordatorio puede desbloquearse y moverse directamente por la pantalla.
+
+### Ready Check
+
+Talent Reminder puede mostrar también el recordatorio cuando se inicia un **Ready Check**.
+
+Esta funcionalidad puede activarse o desactivarse desde las opciones del addon.
+
+El aviso de Ready Check se muestra únicamente cuando:
+
+- La opción de Ready Check está activada.
+- El jugador está dentro de una **mazmorra** o **banda**.
+
+El Ready Check no genera el recordatorio en Mundo, Delves u otros tipos de contenido.
+
+### Botones de especialización
+
+Talent Reminder añade botones de cambio rápido de especialización a la ventana de talentos de World of Warcraft.
+
+Los botones:
+
+- Se generan automáticamente según las especializaciones disponibles para la clase del jugador.
+- Muestran el icono correspondiente a cada especialización.
+- Permiten cambiar de especialización haciendo clic en su icono.
+- Indican la especialización actualmente activa.
+- Se integran directamente en la ventana de talentos.
+- Se ocultan cuando se están inspeccionando los talentos de otro jugador.
+
+La funcionalidad puede activarse o desactivarse desde las opciones de Talent Reminder mediante la opción para mostrar los botones de especialización.
+
+Los botones de especialización están **activados por defecto**.
 
 ### Sonidos
 
@@ -103,6 +134,8 @@ Los clientes `esES` y `esMX` utilizan español, `deDE` alemán, `frFR` francés,
 
 El inglés se carga siempre como idioma base. Si falta alguna clave en una traducción, Talent Reminder muestra automáticamente el texto en inglés para esa clave.
 
+Las nuevas funciones, incluidos los botones de especialización y sus tooltips, utilizan también el sistema de localización del addon.
+
 ### Comandos
 
 | Comando | Función |
@@ -122,17 +155,19 @@ El inglés se carga siempre como idioma base. Si falta alguna clave en una tradu
 - `Core/Instances.lua`: contiene las `instanceID` agrupadas por expansión/Temporada actual y la lógica para comprobar instancias y Mundo.
 - `Core/Sounds.lua`: gestiona los sonidos nativos y el soporte opcional para LibSharedMedia-3.0.
 - `Core/Reminder.lua`: crea y controla el recordatorio visual.
+- `Core/SpecButtons.lua`: crea y gestiona los botones para cambiar de especialización desde la ventana de talentos.
 - `Options/Options.lua`: construye la interfaz de opciones.
-- `Tools/InstanceDump.lua`: contiene la herramienta de diagnóstico utilizada por `/tr instances`.
+- `Tools/CopyWindow.lua`: proporciona la ventana reutilizable de texto copiable.
+- `Tools/InstanceDump.lua`: contiene las herramientas de diagnóstico utilizadas por `/tr id` y `/tr instances`.
 - `Locales/`: contiene los textos traducibles del addon.
 
 ---
 
 ## English
 
-**Talent Reminder** is a World of Warcraft addon that displays a visual reminder to review or change your talents when entering selected locations.
+**Talent Reminder** is a World of Warcraft addon that helps manage your talents through configurable reminders and quick specialization switching.
 
-The addon lets you independently select **World**, individual **expansions**, and the **Current Season**.
+The addon lets you independently select **World**, individual **expansions**, and the **Current Season**. It can also display reminders during a Ready Check and adds quick specialization switch buttons to the talent window.
 
 ### How does it work?
 
@@ -200,8 +235,39 @@ You can configure:
 - Reminder position.
 - Reminder sound.
 - World, expansions and Current Season where the reminder should appear.
+- Whether the reminder should appear during a **Ready Check** inside a dungeon or raid.
 
 The reminder position can be unlocked and moved directly around the screen.
+
+### Ready Check
+
+Talent Reminder can also display the talent reminder whenever a **Ready Check** starts.
+
+This feature can be enabled or disabled from the addon's settings.
+
+A Ready Check reminder is displayed only when:
+
+- The Ready Check option is enabled.
+- The player is inside a **dungeon** or **raid**.
+
+Ready Checks do not trigger the reminder in the World, Delves or other types of content.
+
+### Specialization buttons
+
+Talent Reminder adds quick specialization switch buttons directly to the World of Warcraft talent window.
+
+The buttons:
+
+- Are automatically generated based on the specializations available to the player's class.
+- Display the icon for each specialization.
+- Allow switching specialization by clicking its icon.
+- Indicate the currently active specialization.
+- Integrate directly into the talent window.
+- Are hidden while inspecting another player's talents.
+
+This feature can be enabled or disabled from Talent Reminder's settings using the specialization button option.
+
+Specialization buttons are **enabled by default**.
 
 ### Sounds
 
@@ -231,6 +297,8 @@ Currently included:
 
 English is always loaded as the base language. If a translation is missing a key, Talent Reminder automatically displays the English text for that key.
 
+The new features, including specialization buttons and their tooltips, also use the addon's localization system.
+
 ### Commands
 
 | Command | Function |
@@ -250,6 +318,8 @@ English is always loaded as the base language. If a translation is missing a key
 - `Core/Instances.lua`: contains the `instanceID` values grouped by expansion/Current Season and the logic used to check instances and World.
 - `Core/Sounds.lua`: manages native sounds and optional LibSharedMedia-3.0 support.
 - `Core/Reminder.lua`: creates and controls the visual reminder.
+- `Core/SpecButtons.lua`: creates and manages the specialization switch buttons in the talent window.
 - `Options/Options.lua`: builds the settings interface.
-- `Tools/InstanceDump.lua`: contains the diagnostic utility used by `/tr instances`.
+- `Tools/CopyWindow.lua`: provides the reusable copyable text window.
+- `Tools/InstanceDump.lua`: contains the diagnostic utilities used by `/tr id` and `/tr instances`.
 - `Locales/`: contains the addon's translatable strings.
