@@ -24,6 +24,11 @@ end
 local function UpdateContainer()
     if not container then return end
 
+    if TalentReminderDB and TalentReminderDB.showSpecButtons == false then
+        container:Hide()
+        return
+    end
+
     for _, button in pairs(container.buttons) do
         UpdateButton(button)
     end
@@ -167,3 +172,18 @@ addon:SetScript("OnEvent", function(_, event)
 end)
 
 TrySetup()
+
+function TR.SpecButtons:Refresh()
+    if TalentReminderDB and TalentReminderDB.showSpecButtons == false then
+        if container then
+            container:Hide()
+        end
+        return
+    end
+
+    if container then
+        UpdateContainer()
+    else
+        TrySetup()
+    end
+end

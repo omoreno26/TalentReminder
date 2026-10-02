@@ -655,8 +655,18 @@ function TR.Options:Initialize()
         function(v) TalentReminderDB.remindOnReadyCheck = v end
     )
 
+    MakeCheckbox(panel, TR:T("showSpecButtons"), 24, -437,
+        function() return TalentReminderDB.showSpecButtons end,
+        function(v)
+            TalentReminderDB.showSpecButtons = v
+            if TR.SpecButtons and TR.SpecButtons.Refresh then
+                TR.SpecButtons:Refresh()
+            end
+        end
+    )
+
     local moveButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    moveButton:SetPoint("TOPLEFT", 24, -467)
+    moveButton:SetPoint("TOPLEFT", 24, -487)
     moveButton:SetSize(155, 30)
     moveButton:SetText(TR:T("move"))
 

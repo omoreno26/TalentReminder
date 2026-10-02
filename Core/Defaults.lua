@@ -8,6 +8,7 @@ TR.Defaults = {
     fadeTime = 1.0,
     remindInWorld = false,
     remindOnReadyCheck = false,
+    showSpecButtons = true,
 
     expansions = {
         CLASSIC = true,
