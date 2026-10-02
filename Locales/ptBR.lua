@@ -6,7 +6,8 @@ local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
 L["version"] = "Versão"
-L["subtitle"] = "Configure como o lembrete aparece ao entrar em uma instância selecionada."
+L["createdBy"] = "Criado por"
+L["subtitle"] = "Configure os lembretes de talentos e os recursos adicionais do Talent Reminder."
 L["messageLabel"] = "Texto do lembrete"
 L["fontSize"] = "Tamanho da fonte"
 L["duration"] = "Duração total"

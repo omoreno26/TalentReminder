@@ -408,9 +408,11 @@ function TR.Options:Initialize()
     subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
     subtitle:SetText(TR:T("subtitle"))
 
+    local authorName = C_AddOns.GetAddOnMetadata("TalentReminder", "Author") or "?"
+
     local author = panel:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
     author:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -24, -24)
-    author:SetText("Created by Nazgul")
+    author:SetText(TR:T("createdBy") .. " " .. authorName)
 
     local version = C_AddOns.GetAddOnMetadata("TalentReminder", "Version") or "?"
     local versionText = panel:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")

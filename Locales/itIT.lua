@@ -6,7 +6,8 @@ local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
 L["version"] = "Versione"
-L["subtitle"] = "Configura come appare il promemoria quando entri in un'istanza selezionata."
+L["createdBy"] = "Creato da"
+L["subtitle"] = "Configura i promemoria dei talenti e le funzionalità aggiuntive di Talent Reminder."
 L["messageLabel"] = "Testo del promemoria"
 L["fontSize"] = "Dimensione carattere"
 L["duration"] = "Durata totale"

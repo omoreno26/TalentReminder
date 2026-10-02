@@ -6,7 +6,8 @@ local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
 L["version"] = "Version"
-L["subtitle"] = "Configure l'affichage du rappel lorsque vous entrez dans une instance sélectionnée."
+L["createdBy"] = "Créé par"
+L["subtitle"] = "Configurez les rappels de talents et les fonctionnalités supplémentaires de Talent Reminder."
 L["messageLabel"] = "Texte du rappel"
 L["fontSize"] = "Taille de police"
 L["duration"] = "Durée totale"

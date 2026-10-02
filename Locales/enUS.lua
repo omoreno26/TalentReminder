@@ -2,7 +2,8 @@ local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
 L["version"] = "Version"
-L["subtitle"] = "Configure how the reminder appears when entering a tracked instance."
+L["createdBy"] = "Created by"
+L["subtitle"] = "Configure talent reminders and additional Talent Reminder features."
 L["messageLabel"] = "Reminder text"
 L["fontSize"] = "Font size"
 L["duration"] = "Total duration"

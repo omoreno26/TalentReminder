@@ -6,7 +6,8 @@ local L = TalentReminderLocale
 
 L["title"] = "Talent Reminder"
 L["version"] = "Версия"
-L["subtitle"] = "Настройте отображение напоминания при входе в выбранное подземелье или рейд."
+L["createdBy"] = "Автор:"
+L["subtitle"] = "Настройте напоминания о талантах и дополнительные функции Talent Reminder."
 L["messageLabel"] = "Текст напоминания"
 L["fontSize"] = "Размер шрифта"
 L["duration"] = "Общая длительность"
