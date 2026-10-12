@@ -104,7 +104,6 @@ local function Setup()
             button.name = name
             button:SetID(specIndex)
 
-            -- Exactly the same icon call as TalentTreeTweaks.
             button:SetNormalTexture(icon)
 
             button:SetScript("OnEnter", buttonMixin.OnEnter)
@@ -134,7 +133,6 @@ local function Setup()
         container:SetPoint("RIGHT", talentFrame.PvPTalentSlotTray.Label, "LEFT", -20, 0)
         container:Show()
 
-        -- This is the same lifecycle hook used by TalentTreeTweaks.
         hooksecurefunc(talentFrame, "UpdateInspecting", UpdateContainer)
 
         -- Also cover opening/closing the parent window.
