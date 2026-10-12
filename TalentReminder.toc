@@ -1,4 +1,4 @@
-## Interface: 120100
+## Interface: 120100, 120105
 ## Title: Talent Reminder
 ## Notes: Shows a configurable talent reminder when entering selected instances and adds quick specialization switch buttons to the talent window.
 ## Notes-esES: Muestra un recordatorio de talentos configurable al entrar en las instancias seleccionadas y añade botones para cambiar rápidamente de especialización en la ventana de talentos.
