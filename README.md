@@ -12,8 +12,6 @@ Cuando el jugador cambia de zona o entra en una instancia, Talent Reminder compr
 
 Para Talent Reminder:
 
-> **Mundo = cuando WoW indica que el jugador está fuera de una instancia (`instanceType = "none"`).**
-
 Por tanto, una `instanceID` que no esté configurada **no se considera Mundo automáticamente**. Si el jugador está dentro de una instancia no configurada, simplemente no se muestra el aviso.
 
 Si el jugador no está en Mundo, el addon obtiene la `instanceID` actual y comprueba si pertenece a alguno de los grupos activados.
@@ -174,8 +172,6 @@ The addon lets you independently select **World**, individual **expansions**, an
 Whenever the player changes zones or enters an instance, Talent Reminder first checks whether WoW reports that the character is actually in the **World**.
 
 For Talent Reminder:
-
-> **World = when WoW reports that the player is outside an instance (`instanceType = "none"`).**
 
 Therefore, an unconfigured `instanceID` is **not automatically considered World**. If the player is inside an unconfigured instance, the reminder simply does not appear.
 
