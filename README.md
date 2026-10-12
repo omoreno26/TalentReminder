@@ -102,6 +102,8 @@ Los botones:
 
 La funcionalidad puede activarse o desactivarse desde las opciones de Talent Reminder mediante la opción para mostrar los botones de especialización.
 
+Los iconos para cambiar la especialización de talentos dentro de la propia ventana se basan en Talent Tree Tweaks.
+
 Los botones de especialización están **activados por defecto**.
 
 ### Sonidos
@@ -262,6 +264,8 @@ The buttons:
 - Are hidden while inspecting another player's talents.
 
 This feature can be enabled or disabled from Talent Reminder's settings using the specialization button option.
+
+The talent specialization switching icons within the window itself are based on Talent Tree Tweaks.
 
 Specialization buttons are **enabled by default**.
 
