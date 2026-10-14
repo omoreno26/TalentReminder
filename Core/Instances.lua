@@ -287,10 +287,12 @@ TR.Instances.ByExpansion = {
         [3077] = true, -- Circulo de la Gloria
         [3038] = true, -- Isla Gnaldor
         [3079] = true, -- Cascadas Lluevenono
+        [3043] = true, -- El laberinto de Kindo'jan
     },
 
     -- Temporada actual / Current Season
     -- Este grupo es independiente de la expansión original de la instancia.
+    -- This group is independent of the instance's original expansion.
     CURRENT_SEASON = {
         [2993] = true, -- Altar de los Colmillos
         [2825] = true, -- Guarida de Nalorakk
@@ -313,8 +315,7 @@ function TR.Instances:IsTracked(instanceID)
 
     for expansion, instances in pairs(self.ByExpansion) do
         if instances[instanceID] then
-            -- If an InstanceID belongs to more than one expansion (rework),
-            -- it is tracked when at least one of those expansions is enabled.
+            -- If an InstanceID belongs to more than one expansion (rework), it is tracked when at least one of those expansions is enabled.
             if not TalentReminderDB.expansions or TalentReminderDB.expansions[expansion] ~= false then
                 return true
             end
