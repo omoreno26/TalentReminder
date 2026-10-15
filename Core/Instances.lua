@@ -237,6 +237,8 @@ TR.Instances.ByExpansion = {
         [2657] = true, -- Palacio Nerub'ar
         [2769] = true, -- Liberación de Minahonda
         [2810] = true, -- Forja de Maná Omega
+
+        -- Delves / Profundidad
         [2680] = true, -- Minas Reptaterra
         [2664] = true, -- Capricho Fúngico
         [2681] = true, -- Reposo de Kriegval
@@ -272,6 +274,9 @@ TR.Instances.ByExpansion = {
         [2913] = true, -- Marcha a Quel'Danas
         [2939] = true, -- La Falla Onírica
         [2987] = true, -- La Gruta Mareal
+        [3095] = true, -- La liberación de Kith'ix
+
+        -- Delves / Profundidad
         [3004] = true, -- Abismo Venenoso
         [2933] = true, -- Calamidad de Colegiado
         [2953] = true, -- Plaza del Parhelio
@@ -304,6 +309,7 @@ TR.Instances.ByExpansion = {
         [1877] = true, -- Templo de Sethraliss
         [2987] = true, -- La Gruta Mareal
         [3004] = true, -- Abismo Venenoso 
+        [3095] = true, -- La liberación de Kith'ix
     },
 
 }
