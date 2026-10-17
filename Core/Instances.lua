@@ -313,8 +313,7 @@ TR.Instances.ByExpansion = {
         [3004] = true, -- Abismo Venenoso 
         [3095] = true, -- La liberación de Kith'ix
 
-        -- Delves / Profundidad
-        [3004] = true, -- Abismo Venenoso
+        -- Delves / Profundidad        
         [2933] = true, -- Calamidad de Colegiado
         [2953] = true, -- Plaza del Parhelio
         [2962] = true, -- Atal'Aman
