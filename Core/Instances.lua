@@ -335,6 +335,7 @@ TR.Instances.ByExpansion = {
     -- Este grupo es independiente de la expansión original de la instancia.
     -- This group is independent of the instance's original expansion.
     CURRENT_SEASON = {
+        -- Dungeons / Mazmorras
         [2993] = true, -- Altar de los Colmillos
         [2825] = true, -- Guarida de Nalorakk
         [2813] = true, -- Frontal de la Muerte
