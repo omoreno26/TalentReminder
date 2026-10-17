@@ -7,6 +7,7 @@ TR.Instances = {}
 TR.Instances.ByExpansion = {
     -- Classic
     CLASSIC = {
+        -- Dungeons / Mazmorras
         [33] = true, -- Castillo de Colmillo Oscuro
         [34] = true, -- Las Mazmorras
         [36] = true, -- Minas de la Muerte
@@ -27,6 +28,8 @@ TR.Instances.ByExpansion = {
         [1001] = true, -- Cámaras Escarlata
         [1004] = true, -- Monasterio Escarlata
         [1007] = true, -- Scholomance
+
+        -- Raid / Incursiones
         [409] = true, -- Núcleo de magma
         [469] = true, -- Guarida de Alanegra
         [509] = true, -- Ruinas de Ahn'Qiraj
@@ -36,6 +39,7 @@ TR.Instances.ByExpansion = {
 
     -- The Burning Crusade
     TBC = {
+        -- Dungeons / Mazmorras
         [269] = true, -- La Ciénaga Negra
         [540] = true, -- Las Salas Arrasadas
         [542] = true, -- El Horno de Sangre
@@ -52,18 +56,21 @@ TR.Instances.ByExpansion = {
         [558] = true, -- Criptas Auchenai
         [560] = true, -- Antiguas Laderas de Trabalomas
         [585] = true, -- Bancal del Magister
+        
+        -- Raid / Incursiones
         [532] = true, -- Karazhan
-        [534] = true, -- La Batalla del Monte Hyjal
+        [565] = true, -- Guarida de Gruul
         [544] = true, -- Guarida de Magtheridon
         [548] = true, -- Caverna Santuario Serpiente
         [550] = true, -- El Ojo
-        [564] = true, -- Templo Oscuro
-        [565] = true, -- Guarida de Gruul
+        [534] = true, -- La Batalla del Monte Hyjal        
+        [564] = true, -- Templo Oscuro        
         [580] = true, -- Meseta de La Fuente del Sol
     },
 
     -- Wrath of the Lich King
     WOTLK = {
+        -- Dungeons / Mazmorras
         [574] = true, -- Fortaleza de Utgarde
         [575] = true, -- Pináculo de Utgarde
         [576] = true, -- El Nexo
@@ -80,6 +87,8 @@ TR.Instances.ByExpansion = {
         [650] = true, -- Prueba del Campeón
         [658] = true, -- Foso de Saron
         [668] = true, -- Cámaras de Reflexión
+
+        -- Raid / Incursiones
         [249] = true, -- Guarida de Onyxia
         [533] = true, -- Naxxramas
         [603] = true, -- Ulduar
@@ -93,6 +102,7 @@ TR.Instances.ByExpansion = {
 
     -- Cataclysm
     CATACLYSM = {
+        -- Dungeons / Mazmorras
         [33] = true, -- Castillo de Colmillo Oscuro
         [36] = true, -- Minas de la Muerte
         [568] = true, -- Zul'Aman
@@ -107,16 +117,19 @@ TR.Instances.ByExpansion = {
         [938] = true, -- Fin de los Días
         [939] = true, -- Pozo de la Eternidad
         [940] = true, -- Hora del Crepúsculo
+            
+        -- Raid / Incursiones
+        [757] = true, -- Bastión de Baradin
         [669] = true, -- Descenso de Alanegra
         [671] = true, -- El Bastión del Crepúsculo
-        [720] = true, -- Tierras de Fuego
         [754] = true, -- Trono de los Cuatro Vientos
-        [757] = true, -- Bastión de Baradin
+        [720] = true, -- Tierras de Fuego
         [967] = true, -- Alma de Dragón
     },
 
     -- Mists of Pandaria
     MOP = {
+        -- Dungeons / Mazmorras
         [959] = true, -- Monasterio del Shadopan
         [960] = true, -- Templo del Dragón de Jade
         [961] = true, -- Cervecería del Trueno
@@ -126,6 +139,8 @@ TR.Instances.ByExpansion = {
         [1004] = true, -- Monasterio Escarlata
         [1007] = true, -- Scholomance
         [1011] = true, -- Asedio del Templo de Niuzao
+
+        -- Raid / Incursiones
         [1008] = true, -- Cámaras Mogu'shan
         [1009] = true, -- Corazón del Miedo
         [996] = true, -- Veranda de la Primavera Eterna
@@ -135,6 +150,7 @@ TR.Instances.ByExpansion = {
 
     -- Warlords of Draenor
     WOD = {
+        -- Dungeons / Mazmorras
         [1175] = true, -- Minas Machacasangre
         [1176] = true, -- Cementerio de Sombraluna
         [1182] = true, -- Auchindoun
@@ -143,6 +159,8 @@ TR.Instances.ByExpansion = {
         [1209] = true, -- Trecho Celestial
         [1279] = true, -- El Vergel Eterno
         [1358] = true, -- Cumbre de Roca Negra Superior
+
+        -- Raid / Incursiones
         [1228] = true, -- Ogrópolis
         [1205] = true, -- Fundición Roca Negra
         [1448] = true, -- Ciudadela del Fuego Infernal
@@ -150,6 +168,7 @@ TR.Instances.ByExpansion = {
 
     -- Legion
     LEGION = {
+        -- Dungeons / Mazmorras
         [1456] = true, -- Ojo de Azshara
         [1458] = true, -- Guarida de Neltharion
         [1466] = true, -- Arboleda Corazón Oscuro
@@ -163,6 +182,8 @@ TR.Instances.ByExpansion = {
         [1651] = true, -- Regreso a Karazhan
         [1677] = true, -- Catedral de la Noche Eterna
         [1753] = true, -- Trono del Triunvirato
+
+        -- Raid / Incursiones
         [1520] = true, -- Pesadilla Esmeralda
         [1530] = true, -- Bastión Nocturno
         [1648] = true, -- Prueba del Valor
@@ -172,6 +193,7 @@ TR.Instances.ByExpansion = {
 
     -- Battle for Azeroth
     BFA = {
+        -- Dungeons / Mazmorras
         [1594] = true, -- VETA MADRE
         [1754] = true, -- Fuerte Libre
         [1762] = true, -- Reposo de los Reyes
@@ -183,6 +205,8 @@ TR.Instances.ByExpansion = {
         [1864] = true, -- Altar de la Tormenta
         [1877] = true, -- Templo de Sethraliss
         [2097] = true, -- Operación: Mecandria
+
+        -- Raid / Incursiones
         [1861] = true, -- Uldir
         [2070] = true, -- Batalla de Dazar'alor
         [2096] = true, -- Crisol de Tormentas
@@ -192,6 +216,7 @@ TR.Instances.ByExpansion = {
 
     -- Shadowlands
     SHADOWLANDS = {
+        -- Dungeons / Mazmorras
         [2284] = true, -- Cavernas Sanguinas
         [2285] = true, -- Agujas de Ascensión
         [2286] = true, -- Estela Necrótica
@@ -201,6 +226,8 @@ TR.Instances.ByExpansion = {
         [2291] = true, -- El Otro Lado
         [2293] = true, -- Teatro del Dolor
         [2441] = true, -- Tazavesh, el Mercado Velado
+
+        -- Raid / Incursiones
         [2296] = true, -- Castillo de Nathria
         [2450] = true, -- Sagrario de Dominación
         [2481] = true, -- Sepulcro de los Primeros
@@ -208,6 +235,7 @@ TR.Instances.ByExpansion = {
 
     -- Dragonflight
     DRAGONFLIGHT = {
+        -- Dungeons / Mazmorras
         [2451] = true, -- Uldaman: Legado de Tyr
         [2515] = true, -- Cámara Azur
         [2516] = true, -- La Ofensiva Nokhud
@@ -217,6 +245,8 @@ TR.Instances.ByExpansion = {
         [2526] = true, -- Academia Algeth'ar
         [2527] = true, -- Salas de Infusión
         [2579] = true, -- Amanecer del Infinito
+
+        -- Raid / Incursiones
         [2522] = true, -- Cámara de las Encarnaciones
         [2549] = true, -- Amirdrassil, la Esperanza del Sueño
         [2569] = true, -- Aberrus, el Crisol Ensombrecido
@@ -224,6 +254,7 @@ TR.Instances.ByExpansion = {
 
     -- The War Within
     TWW = {
+        -- Dungeons / Mazmorras
         [2648] = true, -- El Grajero
         [2649] = true, -- Priorato de la Llama Sagrada
         [2651] = true, -- Grieta de Flama Oscura
@@ -231,9 +262,11 @@ TR.Instances.ByExpansion = {
         [2660] = true, -- Ara-Kara, Ciudad de los Ecos
         [2661] = true, -- Lagar de Tragoceniza
         [2662] = true, -- El Rompealbas
-        [2669] = true, -- Ciudad Tejida
-        [2773] = true, -- Operación: Compuerta
+        [2669] = true, -- Ciudad Tejida        
+        [2773] = true, -- Operación: Compuerta        
         [2830] = true, -- Ecodomo Al'dani
+
+        -- Raid / Incursiones
         [2657] = true, -- Palacio Nerub'ar
         [2769] = true, -- Liberación de Minahonda
         [2810] = true, -- Forja de Maná Omega
@@ -260,6 +293,7 @@ TR.Instances.ByExpansion = {
 
     -- Midnight
     MIDNIGHT = {
+        -- Dungeons / Mazmorras
         [2805] = true, -- Aguja Brisaveloz
         [2811] = true, -- Bancal del Magister
         [2813] = true, -- Frontal de la Muerte
@@ -269,11 +303,14 @@ TR.Instances.ByExpansion = {
         [2915] = true, -- Punto de Nexo: Xenas
         [2923] = true, -- Arena Lacravacua
         [2993] = true, -- Altar de los Colmillos
-        [1592] = true, -- Micosis
+
+        -- Raid / Incursiones
         [2912] = true, -- La Aguja del Vacío
-        [2913] = true, -- Marcha a Quel'Danas
         [2939] = true, -- La Falla Onírica
+        [2913] = true, -- Marcha a Quel'Danas        
+        [1592] = true, -- Micosis        
         [2987] = true, -- La Gruta Mareal
+        [3004] = true, -- Abismo Venenoso 
         [3095] = true, -- La liberación de Kith'ix
 
         -- Delves / Profundidad
@@ -307,6 +344,8 @@ TR.Instances.ByExpansion = {
         [1762] = true, -- Reposo de los Reyes
         [2521] = true, -- Estanques de Vida Rubí
         [1877] = true, -- Templo de Sethraliss
+
+        -- Raid / Incursiones
         [2987] = true, -- La Gruta Mareal
         [3004] = true, -- Abismo Venenoso 
         [3095] = true, -- La liberación de Kith'ix
