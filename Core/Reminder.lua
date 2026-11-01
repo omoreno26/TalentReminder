@@ -89,6 +89,11 @@ function TR.Reminder:SetMoveMode(enabled)
     end
 end
 
+-- Identifies the currently displayed reminder so cast events cannot hide a newer one.
+function TR.Reminder:GetDisplayToken()
+    return hideTimerToken
+end
+
 function TR.Reminder:Stop()
     hideTimerToken = hideTimerToken + 1
 
