@@ -691,7 +691,7 @@ function TR.Options:Initialize()
             moveButton:SetText(TR:T("move"))
         end
         SaveMessage()
-        TR.Reminder:Show()
+        TR.Reminder:Show(TalentReminderDB.message, true)
     end)
 
     local resetButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")

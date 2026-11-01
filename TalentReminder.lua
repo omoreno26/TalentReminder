@@ -11,7 +11,7 @@ local function CheckCurrentInstance()
     -- 1) World has priority. Ask WoW first, before checking any instanceID.
     if TR.Instances:IsWorld() then
         if TalentReminderDB.remindInWorld and not lastWasWorld then
-            TR.Reminder:Show()
+            TR.Reminder:Show(TalentReminderDB.message, true)
         end
 
         lastInstanceID = nil
@@ -28,7 +28,7 @@ local function CheckCurrentInstance()
         -- the same transition. Only remind when the tracked instance actually
         -- changes, or when we have just come from World.
         if lastWasWorld or lastInstanceID ~= instanceID then
-            TR.Reminder:Show()
+            TR.Reminder:Show(TalentReminderDB.message, true)
         end
 
         lastInstanceID = instanceID
@@ -69,7 +69,7 @@ SlashCmdList["TALENTREMINDER"] = function(msg)
     if msg == "settings" then
         TR.Options:Open()
     elseif msg == "test" then
-        TR.Reminder:Show()
+        TR.Reminder:Show(TalentReminderDB.message, true)
     elseif msg == "instances" then
         TR.InstanceDump:Show()
     elseif msg == "move" then
@@ -112,7 +112,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1)
         local inInstance, instanceType = IsInInstance()
 
         if inInstance and (instanceType == "party" or instanceType == "raid") then
-            TR.Reminder:Show()
+            TR.Reminder:Show(TalentReminderDB.message, true)
         end
     end
 end)
