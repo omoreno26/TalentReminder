@@ -53,7 +53,7 @@ eventFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
     if event == "UNIT_SPELLCAST_START" then
         -- A different cast replaces the tracked one; never stop another reminder.
         ClearActiveCast()
-        if not VAULT_OPENING_SPELL_IDS[spellID] then
+        if not TalentReminderDB or TalentReminderDB.showVaultLootSpec == false or not VAULT_OPENING_SPELL_IDS[spellID] then
             return
         end
 

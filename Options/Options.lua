@@ -667,8 +667,13 @@ function TR.Options:Initialize()
         end
     )
 
+    MakeCheckbox(panel, TR:T("showVaultLootSpec"), 24, -469,
+        function() return TalentReminderDB.showVaultLootSpec end,
+        function(v) TalentReminderDB.showVaultLootSpec = v end
+    )
+
     local moveButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    moveButton:SetPoint("TOPLEFT", 24, -487)
+    moveButton:SetPoint("TOPLEFT", 24, -519)
     moveButton:SetSize(155, 30)
     moveButton:SetText(TR:T("move"))
 
@@ -709,7 +714,7 @@ function TR.Options:Initialize()
     end)
 
     local info = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", 24, -522)
+    info:SetPoint("TOPLEFT", 24, -554)
     info:SetWidth(560)
     info:SetJustifyH("LEFT")
     info:SetText(TR:T("info"))

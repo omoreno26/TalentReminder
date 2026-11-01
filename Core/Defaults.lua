@@ -9,6 +9,7 @@ TR.Defaults = {
     remindInWorld = false,
     remindOnReadyCheck = false,
     showSpecButtons = true,
+    showVaultLootSpec = true,
 
     expansions = {
         CLASSIC = true,
