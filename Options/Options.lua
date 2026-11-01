@@ -33,6 +33,26 @@ local function MakeLabel(parent, labelText, x, y)
     return label
 end
 
+local function MakeSection(parent, titleText, y, separator)
+    -- Native WoW-style centered section title, flanked by two fine rules.
+    local title = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    title:SetPoint("TOP", parent, "TOPLEFT", 310, y)
+    title:SetText(titleText)
+
+    local leftLine = parent:CreateTexture(nil, "ARTWORK")
+    leftLine:SetColorTexture(0.55, 0.44, 0.20, 0.65)
+    leftLine:SetHeight(1)
+    leftLine:SetPoint("LEFT", parent, "TOPLEFT", 24, y - 7)
+    leftLine:SetPoint("RIGHT", title, "LEFT", -8, 0)
+
+    local rightLine = parent:CreateTexture(nil, "ARTWORK")
+    rightLine:SetColorTexture(0.55, 0.44, 0.20, 0.65)
+    rightLine:SetHeight(1)
+    rightLine:SetPoint("LEFT", title, "RIGHT", 8, 0)
+    rightLine:SetPoint("RIGHT", parent, "TOPLEFT", 596, y - 7)
+    return title
+end
+
 local function MakeSlider(parent, labelText, minValue, maxValue, step, x, y, width, getValue, setValue, formatter)
     MakeLabel(parent, labelText, x, y)
 
@@ -398,6 +418,7 @@ end
 
 function TR.Options:Initialize()
     panel = CreateFrame("Frame")
+    panel:SetSize(650, 580)
     panel.name = TR:T("title")
 
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -419,10 +440,60 @@ function TR.Options:Initialize()
     versionText:SetPoint("TOPRIGHT", author, "BOTTOMRIGHT", 0, -4)
     versionText:SetText(TR:T("version") .. " " .. version)
 
-    MakeLabel(panel, TR:T("messageLabel"), 24, -98)
+    -- Keep the addon header fixed. The scroll viewport ends above WoW's
+    -- fixed Close button, and the slider lives outside the clipped viewport.
+    local scrollFrame = CreateFrame("ScrollFrame", "TalentReminderOptionsScrollFrame", panel)
+    scrollFrame:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, -66)
+    scrollFrame:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -46, 54)
+    scrollFrame:SetClipsChildren(true)
+    scrollFrame:EnableMouseWheel(true)
 
-    messageEditBox = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
-    messageEditBox:SetPoint("TOPLEFT", 24, -121)
+    local scrollChild = CreateFrame("Frame", nil, scrollFrame)
+    scrollChild:SetSize(620, 645)
+    scrollFrame:SetScrollChild(scrollChild)
+    local content = scrollChild
+
+    -- Explicit native WoW slider: unlike UIPanelScrollFrameTemplate, its
+    -- visibility and positioning do not depend on inherited template anchors.
+    local scrollBar = CreateFrame("Slider", "TalentReminderOptionsScrollBar", panel, "UIPanelScrollBarTemplate")
+    scrollBar:ClearAllPoints()
+    scrollBar:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -22, -82)
+    scrollBar:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -22, 70)
+    scrollBar:SetWidth(16)
+    scrollBar:SetValueStep(24)
+    scrollBar:SetObeyStepOnDrag(false)
+
+    local function UpdateScrollRange()
+        local maxScroll = math.max(0, scrollChild:GetHeight() - scrollFrame:GetHeight())
+        scrollBar:SetMinMaxValues(0, maxScroll)
+        if scrollBar:GetValue() > maxScroll then
+            scrollBar:SetValue(maxScroll)
+        end
+        scrollFrame:SetVerticalScroll(scrollBar:GetValue())
+    end
+
+    scrollBar:SetScript("OnValueChanged", function(_, value)
+        scrollFrame:SetVerticalScroll(value)
+        HideAllDropdownMenus()
+    end)
+    scrollFrame:SetScript("OnMouseWheel", function(_, delta)
+        scrollBar:SetValue(scrollBar:GetValue() - delta * 36)
+    end)
+    scrollFrame:HookScript("OnSizeChanged", UpdateScrollRange)
+    panel:HookScript("OnShow", function()
+        UpdateScrollRange()
+        scrollBar:SetValue(0)
+        scrollFrame:SetVerticalScroll(0)
+        scrollBar:Show()
+    end)
+    UpdateScrollRange()
+
+    MakeSection(content, TR:T("sectionTalentAlert"), -10, false)
+
+    MakeLabel(content, TR:T("messageLabel"), 24, -41)
+
+    messageEditBox = CreateFrame("EditBox", nil, content, "InputBoxTemplate")
+    messageEditBox:SetPoint("TOPLEFT", 24, -64)
     messageEditBox:SetSize(360, 32)
     messageEditBox:SetAutoFocus(false)
     messageEditBox:SetMaxLetters(120)
@@ -441,7 +512,7 @@ function TR.Options:Initialize()
 
     -- WoW's InputBoxTemplate can visually hide preloaded text until the field
     -- receives focus. Keep a separate display label on top while unfocused.
-    local messageDisplay = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    local messageDisplay = content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     messageDisplay:SetPoint("LEFT", messageEditBox, "LEFT", 8, 0)
     messageDisplay:SetPoint("RIGHT", messageEditBox, "RIGHT", -8, 0)
     messageDisplay:SetJustifyH("LEFT")
@@ -520,10 +591,10 @@ function TR.Options:Initialize()
         RefreshMessageDisplay()
     end)
 
-    MakeLabel(panel, TR:T("textColor"), 24, -176)
+    MakeLabel(content, TR:T("textColor"), 24, -112)
 
-    colorDropdown = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    colorDropdown:SetPoint("TOPLEFT", 24, -199)
+    colorDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    colorDropdown:SetPoint("TOPLEFT", 24, -135)
     colorDropdown:SetSize(260, 30)
 
     colorDropdown.text = colorDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -556,13 +627,13 @@ function TR.Options:Initialize()
 
     RefreshColorDropdownText()
 
-    MakeSlider(panel, TR:T("fontSize"), 12, 72, 1, 340, -176, 220,
+    MakeSlider(content, TR:T("fontSize"), 12, 72, 1, 340, -112, 220,
         function() return TalentReminderDB.fontSize end,
         function(v) TalentReminderDB.fontSize = v end,
         function(v) return string.format("%d", v) end
     )
 
-    MakeSlider(panel, TR:T("duration"), 1, 15, 0.5, 24, -251, 220,
+    MakeSlider(content, TR:T("duration"), 1, 15, 0.5, 24, -182, 220,
         function() return TalentReminderDB.duration end,
         function(v)
             TalentReminderDB.duration = v
@@ -573,52 +644,16 @@ function TR.Options:Initialize()
         function(v) return string.format("%.1f s", v) end
     )
 
-    MakeSlider(panel, TR:T("fade"), 0, 5, 0.25, 340, -251, 220,
+    MakeSlider(content, TR:T("fade"), 0, 5, 0.25, 340, -182, 220,
         function() return TalentReminderDB.fadeTime end,
         function(v) TalentReminderDB.fadeTime = math.min(v, TalentReminderDB.duration) end,
         function(v) return string.format("%.2f s", v) end
     )
 
-    MakeLabel(panel, TR:T("expansions"), 24, -326)
+    MakeLabel(content, TR:T("sound"), 24, -264)
 
-    expansionDropdown = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    expansionDropdown:SetPoint("TOPLEFT", 24, -349)
-    expansionDropdown:SetSize(260, 30)
-
-    expansionDropdown.text = expansionDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    expansionDropdown.text:SetPoint("LEFT", 12, 0)
-    expansionDropdown.text:SetPoint("RIGHT", -28, 0)
-    expansionDropdown.text:SetJustifyH("LEFT")
-
-    -- Same native WoW dropdown arrow used by Color and Sound.
-    local expansionArrow = expansionDropdown:CreateTexture(nil, "OVERLAY")
-    expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
-    expansionArrow:SetSize(20, 20)
-    expansionArrow:SetPoint("RIGHT", expansionDropdown, "RIGHT", -6, 0)
-
-    expansionDropdown:SetScript("OnMouseDown", function()
-        expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
-    end)
-
-    expansionDropdown:SetScript("OnMouseUp", function()
-        expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
-    end)
-
-    expansionDropdown:SetScript("OnClick", function()
-        local wasOpen = expansionMenuFrame and expansionMenuFrame:IsShown()
-        HideAllDropdownMenus()
-
-        if not wasOpen then
-            BuildExpansionMenu()
-        end
-    end)
-
-    RefreshExpansionDropdownText()
-
-    MakeLabel(panel, TR:T("sound"), 340, -326)
-
-    soundDropdown = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    soundDropdown:SetPoint("TOPLEFT", 340, -349)
+    soundDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    soundDropdown:SetPoint("TOPLEFT", 24, -287)
     soundDropdown:SetSize(260, 30)
 
     soundDropdown.text = soundDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -652,12 +687,50 @@ function TR.Options:Initialize()
 
     RefreshSoundDropdownText()
 
-    MakeCheckbox(panel, TR:T("readyCheckReminder"), 24, -405,
+    MakeLabel(content, TR:T("expansions"), 340, -264)
+
+    expansionDropdown = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    expansionDropdown:SetPoint("TOPLEFT", 340, -287)
+    expansionDropdown:SetSize(260, 30)
+
+    expansionDropdown.text = expansionDropdown:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    expansionDropdown.text:SetPoint("LEFT", 12, 0)
+    expansionDropdown.text:SetPoint("RIGHT", -28, 0)
+    expansionDropdown.text:SetJustifyH("LEFT")
+
+    -- Same native WoW dropdown arrow used by Color and Sound.
+    local expansionArrow = expansionDropdown:CreateTexture(nil, "OVERLAY")
+    expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+    expansionArrow:SetSize(20, 20)
+    expansionArrow:SetPoint("RIGHT", expansionDropdown, "RIGHT", -6, 0)
+
+    expansionDropdown:SetScript("OnMouseDown", function()
+        expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
+    end)
+
+    expansionDropdown:SetScript("OnMouseUp", function()
+        expansionArrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+    end)
+
+    expansionDropdown:SetScript("OnClick", function()
+        local wasOpen = expansionMenuFrame and expansionMenuFrame:IsShown()
+        HideAllDropdownMenus()
+
+        if not wasOpen then
+            BuildExpansionMenu()
+        end
+    end)
+
+    RefreshExpansionDropdownText()
+
+
+    MakeCheckbox(content, TR:T("readyCheckReminder"), 24, -334,
         function() return TalentReminderDB.remindOnReadyCheck end,
         function(v) TalentReminderDB.remindOnReadyCheck = v end
     )
 
-    MakeCheckbox(panel, TR:T("showSpecButtons"), 24, -437,
+    MakeSection(content, TR:T("sectionAdditional"), -380, true)
+    MakeCheckbox(content, TR:T("showSpecButtons"), 24, -412,
         function() return TalentReminderDB.showSpecButtons end,
         function(v)
             TalentReminderDB.showSpecButtons = v
@@ -667,13 +740,19 @@ function TR.Options:Initialize()
         end
     )
 
-    MakeCheckbox(panel, TR:T("showVaultLootSpec"), 24, -469,
+    MakeCheckbox(content, TR:T("showVaultLootSpecShort"), 24, -444,
         function() return TalentReminderDB.showVaultLootSpec end,
         function(v) TalentReminderDB.showVaultLootSpec = v end
     )
 
-    local moveButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    moveButton:SetPoint("TOPLEFT", 24, -519)
+    local vaultHint = content:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
+    vaultHint:SetPoint("TOPLEFT", content, "TOPLEFT", 62, -479)
+    vaultHint:SetText(TR:T("vaultNoSoundHint"))
+
+    MakeSection(content, TR:T("sectionPosition"), -515, true)
+
+    local moveButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+    moveButton:SetPoint("TOPLEFT", 24, -545)
     moveButton:SetSize(155, 30)
     moveButton:SetText(TR:T("move"))
 
@@ -683,7 +762,7 @@ function TR.Options:Initialize()
         self:SetText(TR.Reminder:IsMoveMode() and TR:T("lock") or TR:T("move"))
     end)
 
-    local testButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    local testButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
     testButton:SetPoint("LEFT", moveButton, "RIGHT", 12, 0)
     testButton:SetSize(155, 30)
     testButton:SetText(TR:T("test"))
@@ -699,7 +778,7 @@ function TR.Options:Initialize()
         TR.Reminder:Show(TalentReminderDB.message, true)
     end)
 
-    local resetButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    local resetButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
     resetButton:SetPoint("LEFT", testButton, "RIGHT", 12, 0)
     resetButton:SetSize(155, 30)
     resetButton:SetText(TR:T("center"))
@@ -713,8 +792,8 @@ function TR.Options:Initialize()
         TR.Reminder:ApplyPosition()
     end)
 
-    local info = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", 24, -554)
+    local info = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    info:SetPoint("TOPLEFT", 24, -583)
     info:SetWidth(560)
     info:SetJustifyH("LEFT")
     info:SetText(TR:T("info"))

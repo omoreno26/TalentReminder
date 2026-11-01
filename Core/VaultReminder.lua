@@ -2,9 +2,10 @@ local addonName, TR = ...
 
 -- Add player-cast SpellIDs here to test the loot-spec reminder anywhere.
 local VAULT_OPENING_SPELL_IDS = {
-    [449976] = true,  -- Great Vault
-    [1271478] = true, -- Great Vault (Silvermoon)
     [8936] = false, -- resto druid Regrowth for testing
+
+    [449976] = true,  -- Great Vault
+    [1271478] = true, -- Great Vault (Silvermoon)    
 }
 
 local function GetLootSpecText()
