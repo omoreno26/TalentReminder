@@ -102,7 +102,7 @@ function TR.Reminder:Stop()
     end
 end
 
-function TR.Reminder:Show()
+function TR.Reminder:Show(message, playSound)
     if not TalentReminderDB or not frame then
         return
     end
@@ -117,10 +117,17 @@ function TR.Reminder:Show()
     self:ApplyTextStyle()
     self:ApplyPosition()
 
+    -- Optional text overrides the configured message for this display only.
+    if message ~= nil then
+        text:SetText(message)
+    end
+
     frame:SetAlpha(1)
     frame:Show()
 
-    TR.Sound:Play()
+    if playSound ~= false then
+        TR.Sound:Play()
+    end
 
     if moveMode then
         return
