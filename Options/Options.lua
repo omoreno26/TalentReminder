@@ -745,14 +745,10 @@ function TR.Options:Initialize()
         function(v) TalentReminderDB.showVaultLootSpec = v end
     )
 
-    local vaultHint = content:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
-    vaultHint:SetPoint("TOPLEFT", content, "TOPLEFT", 62, -479)
-    vaultHint:SetText(TR:T("vaultNoSoundHint"))
-
-    MakeSection(content, TR:T("sectionPosition"), -515, true)
+    MakeSection(content, TR:T("sectionPosition"), -495, true)
 
     local moveButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-    moveButton:SetPoint("TOPLEFT", 24, -545)
+    moveButton:SetPoint("TOPLEFT", 24, -525)
     moveButton:SetSize(155, 30)
     moveButton:SetText(TR:T("move"))
 
@@ -793,7 +789,7 @@ function TR.Options:Initialize()
     end)
 
     local info = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", 24, -583)
+    info:SetPoint("TOPLEFT", 24, -563)
     info:SetWidth(560)
     info:SetJustifyH("LEFT")
     info:SetText(TR:T("info"))
